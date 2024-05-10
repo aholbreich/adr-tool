@@ -6,9 +6,9 @@ import (
 
 type CLI struct {
 	Globals
-	Init InitCmd `cmd:"" help:"Intialized ADR configuration in the current project"`
+	Init InitCmd `cmd:"" help:"Setup new ADR configuration in the current project"`
 	New  NewCmd  `cmd:"" help:"Adds new ADR"`
-	List ListCmd `cmd:"" help:"Lists all existing adrs"`
+	List ListCmd `cmd:"" help:"Lists all existing ADRs"`
 }
 
 func main() {

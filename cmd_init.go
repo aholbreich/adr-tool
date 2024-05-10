@@ -34,7 +34,7 @@ func initConfig(baseDir string) {
 	if err != nil {
 		panic(err)
 	}
-	color.White("Writngi ")
+	color.White("Writing new configuration at: " + configFilePath)
 	os.WriteFile(configFilePath, bytes, 0644)
 }
 
