@@ -15,10 +15,10 @@ before you start working.
 ## Creating a new ADR
 
 ```bash
-adr new "ADR Name"
+adr new how to make CLI tools
 ```
 this will create a new numbered ADR in folder `.adr`:
-`1-ADR Name`.
+`1-how to make CLI tools.md`.
 
 ## Listing existing ADRs
 

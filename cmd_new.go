@@ -15,16 +15,17 @@ import (
 
 // CLI Command
 type NewCmd struct {
-	Name string `arg required help:"ADR Name"`
+	Name []string `arg required help:"ADR Name"`
 }
 
 // Command Handler
 func (r *NewCmd) Run() error {
-	fmt.Println(" Creating new ADR" + r.Name)
+	adrName := strings.Join(r.Name, " ")
+	fmt.Println(" Creating new ADR" + adrName)
 	currentConfig := getConfig()
 	currentConfig.CurrentAdr++
 	updateConfig(currentConfig)
-	newAdr(currentConfig, r.Name)
+	newAdr(currentConfig, adrName)
 	return nil
 
 }
