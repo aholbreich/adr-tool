@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"html/template"
 	"os"
 	"path/filepath"
@@ -15,13 +14,12 @@ import (
 
 // CLI Command
 type NewCmd struct {
-	Name []string `arg required help:"ADR Name"`
+	AdrName []string `arg:"" required:"" help:"ADR Name"`
 }
 
 // Command Handler
 func (r *NewCmd) Run() error {
-	adrName := strings.Join(r.Name, " ")
-	fmt.Println(" Creating new ADR" + adrName)
+	adrName := strings.Join(r.AdrName, " ")
 	currentConfig := getConfig()
 	currentConfig.CurrentAdr++
 	updateConfig(currentConfig)
@@ -55,7 +53,7 @@ func updateConfig(config AdrConfig) {
 func newAdr(config AdrConfig, adrName string) {
 	adr := Adr{
 		Title:  strings.Join([]string{adrName}, " "),
-		Date:   time.Now().Format("02-01-2006 15:04:05"),
+		Date:   time.Now().Format("01-02-2006 15:04"),
 		Number: config.CurrentAdr,
 		Status: PROPOSED,
 	}
@@ -71,5 +69,5 @@ func newAdr(config AdrConfig, adrName string) {
 	}
 	template.Execute(f, adr)
 	f.Close()
-	color.Green("ADR number " + strconv.Itoa(adr.Number) + " was successfully written to : " + adrFullPath)
+	color.Green("New ADR " + strconv.Itoa(adr.Number) + " was successfully written to : " + adrFullPath)
 }
