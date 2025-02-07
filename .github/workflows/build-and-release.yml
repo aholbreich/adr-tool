@@ -78,7 +78,7 @@ jobs:
         # Some reference: https://fpm.readthedocs.io/en/latest/cli-reference.html
       - name: Build RPM Package
         run: |
-          fpm --version ${VERSION} adr
+          fpm --version ${VERSION} -s dir ./adr
 
       - name: Push RPM updates to RPM Repository
         run: |
