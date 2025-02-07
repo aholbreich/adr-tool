@@ -25,9 +25,11 @@ jobs:
 
         # Cache Go modules
       - name: Cache Go modules
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
-          path: ~/go/pkg/mod
+          path: |
+            ~/go/pkg/mod
+#           ~/.cache/go-build
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.mod') }}
           restore-keys: |
             ${{ runner.os }}-go-
@@ -46,4 +48,4 @@ jobs:
         # Build ADR tool
       - name: Build ADR tool
         run: |
-          go build -o adr ./cmd
+          go build -o adr ./
