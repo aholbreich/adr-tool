@@ -1,5 +1,8 @@
 name: Build and Release ADR Tool RPM
 
+permissions:
+  contents: write
+
 on:
   push:
     branches:
@@ -29,7 +32,7 @@ jobs:
         with:
           path: |
             ~/go/pkg/mod
-#           ~/.cache/go-build
+          #           ~/.cache/go-build
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.mod') }}
           restore-keys: |
             ${{ runner.os }}-go-
@@ -57,4 +60,26 @@ jobs:
         # Create tarball dynamically with version
       - name: Create tarball
         run: |
-          tar -czf adr-tool-${VERSION}.tar.gz adr 
+          tar -czf adr-tool-${VERSION}.tar.gz adr
+
+      - name: Build RPM Package
+        run: |
+          fpm -s dir -t rpm -n adr -v ${VERSION} --prefix /usr/local/bin adr --description "ADR-Tool - A command-line tool for managing Architecture Decision Records (ADR)." \
+              --url "https://github.com/aholbreich/adr-tool" \
+              --maintainer "alexander@holbreich.org" \
+              --vendor "alexander.holbreich.org" \
+              --category "Development/Tools"
+
+      - name: Push RPM updates to RPM Repository
+        run: |
+          git clone https://github.com/aholbreich/rpm-repo.git
+            cd rpm-repo
+            cp ../*.rpm .   # Copy new RPMs to the repo
+            createrepo .  # Rebuild metadata
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            git add .
+            git commit -m "Update RPM repository metadata"
+            git push https://github.com/aholbreich/rpm-repo.git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
