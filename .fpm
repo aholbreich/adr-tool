@@ -1,5 +1,3 @@
--s dir
--t rpm
 --name adr-tool
 --architecture all
 --prefix /usr/local/bin
