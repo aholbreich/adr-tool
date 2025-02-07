@@ -6,6 +6,25 @@ Inspired by the [adr-tools](https://github.com/npryce/adr-tools) but using the G
 
 # Installation 
 
+## RPM (Fedora, RedHat)
+
+First Add RPM repository
+```bash
+echo '[aHolbreich Repository]
+name=aHolbreich Repository
+baseurl=https://aholbreich.github.io/rpm-repo/
+enabled=1
+gpgcheck=0' | sudo tee /etc/yum.repos.d/aHolbreich.repo
+
+```
+install rpm with `yum` or `dnf`
+
+```bash
+
+sudo dnf install adr-tool
+
+```
+
 ## Local build
 
 ```bash
