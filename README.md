@@ -58,9 +58,10 @@ adr new -h
 User your favored Editor, Open the desired ADR file under ./.adr/ folder change anything.
 
 ## TODOs
-[ ] Add build pipeline
-[ ] Add ADR Status Info in listing (Require file parsing)
-[ ] Add Status transition? 
+
+* [.] Add build pipeline
+* [ ] Add ADR Status Info in listing (Require file parsing)
+* [ ] Add Status transition? 
 
 
 ## For developers
