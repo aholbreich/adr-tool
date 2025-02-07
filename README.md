@@ -34,3 +34,13 @@ User your favored Editor, Open the desired ADR file under ./.adr/ folder change 
 [ ] Add build pipeline
 [ ] Add ADR Status Info in listing (Require file parsing)
 [ ] Add Status transition? 
+
+
+## For developers
+
+```bash
+# VBuild and try local
+go build -o adr
+
+./adr
+```
