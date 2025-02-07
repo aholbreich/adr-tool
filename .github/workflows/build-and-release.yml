@@ -20,6 +20,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Check Git status and tag retrieval
+        run: |
+          # Check if we're in a Git repository
+          git status
+          git log --oneline -n 5
+
+          git config --list
+          git tag -l
+
+          # Try the describe command and see if it returns a valid tag
+          VERSION=$(git describe --tags --abbrev=0)
+          if [ -z "$VERSION" ]; then
+            echo "No tags found! Exiting..."
+            exit 1
+          fi
+
+          # Echo the version to verify
+          echo "VERSION: ${VERSION}"
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+        shell: /usr/bin/bash -e {0}
+
         # Set up Go
       - name: Set up Go
         uses: actions/setup-go@v2
@@ -55,7 +76,7 @@ jobs:
       # Install fpm
       - name: Install fpm
         run: |
-          sudo gem install --no-document fpm      
+          sudo gem install --no-document fpm
 
         # Run Go tests
       - name: Run Go tests
@@ -64,7 +85,9 @@ jobs:
 
       # Get version dynamically from Git tag
       - name: Determine Version
-        run: echo "VERSION=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+        run: |
+          echo "VERSION=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+          echo "${VERSION}"
 
         # Build ADR tool with version information
       - name: Build ADR tool

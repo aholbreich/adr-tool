@@ -78,7 +78,7 @@ User your favored Editor, Open the desired ADR file under ./.adr/ folder change 
 
 ## TODOs
 
-* [.] Add build pipeline
+* [x] Add build pipeline
 * [ ] Add ADR Status Info in listing (Require file parsing)
 * [ ] Add Status transition? 
 
