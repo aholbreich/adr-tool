@@ -10,11 +10,12 @@ Inspired by the [adr-tools](https://github.com/npryce/adr-tools) but using the G
 
 First Add RPM repository
 ```bash
-echo '[aHolbreich Repository]
-name=aHolbreich Repository
+# Docu: https://aholbreich.github.io/rpm-repo/#installation-fedora-centos-redhat
+echo '[Holbreich]
+name=Holbreich Repository
 baseurl=https://aholbreich.github.io/rpm-repo/
 enabled=1
-gpgcheck=0' | sudo tee /etc/yum.repos.d/aHolbreich.repo
+gpgcheck=0' | sudo tee /etc/yum.repos.d/holbreich.repo
 
 ```
 install rpm with `yum` or `dnf`
@@ -24,6 +25,7 @@ install rpm with `yum` or `dnf`
 sudo dnf install adr-tool
 
 ```
+Checkout [rpm-repo](https://github.com/aholbreich/rpm-repo) in case of any issues.
 
 ## Local build
 
