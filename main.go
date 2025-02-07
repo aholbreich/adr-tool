@@ -6,6 +6,8 @@ import (
 	"github.com/alecthomas/kong"
 )
 
+var version = "dev" // Default to "dev", overridden by build flags
+
 func main() {
 
 	cli := cli.CLI{}
@@ -19,7 +21,7 @@ func main() {
 			Summary: false,
 		}),
 		kong.Vars{
-			"version": "0.0.2",
+			"version": version,
 		})
 
 	err := ctx.Run(&cli.Globals)

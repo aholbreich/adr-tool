@@ -45,7 +45,16 @@ jobs:
         run: |
           go test ./...
 
-        # Build ADR tool
+      # Get version dynamically from Git tag
+      - name: Determine Version
+        run: echo "VERSION=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+
+        # Build ADR tool with version information
       - name: Build ADR tool
         run: |
-          go build -o adr ./
+          go build -ldflags "-X main.version=${VERSION}"  -o adr ./
+
+        # Create tarball dynamically with version
+      - name: Create tarball
+        run: |
+          tar -czf adr-tool-${VERSION}.tar.gz adr 
