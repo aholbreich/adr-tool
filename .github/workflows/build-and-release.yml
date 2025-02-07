@@ -36,12 +36,26 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.mod') }}
           restore-keys: |
             ${{ runner.os }}-go-
+´
+        # Cache apt dependencies
+      - name: Cache APT dependencies
+        uses: actions/cache@v2
+        with:
+          path: /tmp/apt-cache
+          key: ${{ runner.os }}-apt-${{ hashFiles('**/apt-get.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-apt-
 
-        # Install RPM build dependencies
+        # Install needed dependencies
       - name: Install build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y rpm golang
+          sudo apt-get install -y rpm golang ruby ruby-dev
+
+      # Install fpm
+      - name: Install fpm
+        run: |
+          sudo gem install --no-document fpm      
 
         # Run Go tests
       - name: Run Go tests
@@ -73,13 +87,12 @@ jobs:
       - name: Push RPM updates to RPM Repository
         run: |
           git clone https://github.com/aholbreich/rpm-repo.git
-            cd rpm-repo
-            cp ../*.rpm .   # Copy new RPMs to the repo
-            createrepo .  # Rebuild metadata
-            git config --global user.name "github-actions[bot]"
-            git config --global user.email "github-actions[bot]@users.noreply.github.com"
-            git add .
-            git commit -m "Update RPM repository metadata"
-            git push https://github.com/aholbreich/rpm-repo.git
+          cd rpm-repo
+          cp ../*.rpm .   # Copy new RPMs to the repo
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Update RPM repository metadata"
+          git push https://github.com/aholbreich/rpm-repo.git
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
