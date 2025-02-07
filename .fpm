@@ -1,0 +1,10 @@
+-s dir
+-t rpm
+--name adr-tool
+--architecture all
+--prefix /usr/local/bin
+--url "https://github.com/aholbreich/adr-tool" 
+--maintainer "alexander@holbreich.org"
+--vendor "https://alexander.holbreich.org"
+--category "Development/Tools"
+--description "ADR-Tool - A command-line tool for managing Architecture Decision Records (ADR)."
