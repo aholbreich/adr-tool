@@ -4,7 +4,24 @@ Yet another ADR Tool written in Go.
 
 Inspired by the [adr-tools](https://github.com/npryce/adr-tools) but using the Go instead of Bash.
 
-# Init configuration
+# Installation 
+
+## Local build
+
+```bash
+#Build locally
+go build -o adr
+# Make available to the system
+sudo mv adr /usr/local/bin/adr
+
+# Alternatively make it available to your user only
+mv adr ~/bin/adr
+
+```
+
+# Usage
+
+## Init configuration
 
 Run
 ```bash
@@ -24,6 +41,16 @@ this will create a new numbered ADR in folder `.adr`:
 
 ```bash
 adr list 
+```
+
+## Help and Docu
+
+```bash
+# List all commands
+adr -h 
+
+#Example detailed help to a particular subcommand
+adr new -h 
 ```
 
 ## Composing, Editing and Change Status of your ADR
