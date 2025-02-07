@@ -29,7 +29,7 @@ func initConfig(baseDir string) {
 		color.Red("Directory" + baseDir + " already exists. Not overriding.")
 		os.Exit(-1)
 	}
-	config := model.AdrConfig{baseDir, 0}
+	config := model.AdrConfig{BaseDir: baseDir, CurrentAdr: 0}
 	bytes, err := json.MarshalIndent(config, "", " ")
 	if err != nil {
 		panic(err)
