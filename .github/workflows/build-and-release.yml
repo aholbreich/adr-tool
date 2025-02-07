@@ -67,16 +67,22 @@ jobs:
       # Get version dynamically from Git tag
       - name: Determine Version
         run: |
+
+          COMMIT=$(git rev-parse --short HEAD)
           # Try to get the latest tag
           VERSION=$(git describe --tags --abbrev=0 || echo "No tags found")
 
           if [ "$VERSION" == "No tags found" ]; then
             echo "No tags found, using commit hash instead"
-            VERSION=$(git rev-parse --short HEAD)
+            VERSION=${COMMIT}
           fi
 
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
-          echo "Version set to: ${VERSION}"
+          echo "COMMIT=${COMMIT}" >> $GITHUB_ENV
+
+          echo "COUNT=$(git rev-list $(git describe --tags --abbrev=0)..HEAD --count)" >> $GITHUB_ENV
+
+          echo "Version set to: ${VERSION}, COUNT=${COUNT}, COMMIT=${COMMIT}"
         shell: /usr/bin/bash -e {0}
 
         # Build ADR tool with version information
@@ -91,7 +97,7 @@ jobs:
         # Some reference: https://fpm.readthedocs.io/en/latest/cli-reference.html
       - name: Build RPM Package
         run: |
-          fpm --version ${VERSION} -s dir adr
+          fpm --version ${VERSION} --iteration "${COUNT}.${COMMIT}" -s dir adr
 
       - name: Push RPM updates to RPM Repository
         run: |
