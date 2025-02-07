@@ -82,7 +82,8 @@ jobs:
               --url "https://github.com/aholbreich/adr-tool" \
               --maintainer "alexander@holbreich.org" \
               --vendor "alexander.holbreich.org" \
-              --category "Development/Tools"
+              --category "Development/Tools" \
+              adr
 
       - name: Push RPM updates to RPM Repository
         run: |
