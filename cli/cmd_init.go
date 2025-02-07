@@ -1,8 +1,11 @@
-package main
+package cli
 
 import (
 	"encoding/json"
 	"os"
+
+	"adr-tool/config"
+	"adr-tool/model"
 
 	"github.com/fatih/color"
 )
@@ -26,7 +29,7 @@ func initConfig(baseDir string) {
 		color.Red("Directory" + baseDir + " already exists. Not overriding.")
 		os.Exit(-1)
 	}
-	config := AdrConfig{baseDir, 0}
+	config := model.AdrConfig{baseDir, 0}
 	bytes, err := json.MarshalIndent(config, "", " ")
 	if err != nil {
 		panic(err)
@@ -36,7 +39,7 @@ func initConfig(baseDir string) {
 }
 
 func initTemplate() {
-	body := []byte(TEMPLATE1)
+	body := []byte(config.TEMPLATE1)
 
 	os.WriteFile(templateFilePath, body, 0644)
 }

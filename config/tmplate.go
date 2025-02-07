@@ -1,4 +1,4 @@
-package main
+package config
 
 const TEMPLATE1 = `
 # {{.Number}}. {{.Title}}

@@ -1,4 +1,4 @@
-package main
+package cli
 
 import (
 	"fmt"
@@ -14,8 +14,4 @@ func (v VersionFlag) BeforeApply(app *kong.Kong, vars kong.Vars) error {
 	fmt.Println(vars["version"])
 	app.Exit(0)
 	return nil
-}
-
-type Globals struct {
-	Version VersionFlag `name:"version" short:"v" help:"Print version information and quit"`
 }

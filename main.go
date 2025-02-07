@@ -1,30 +1,25 @@
 package main
 
 import (
+	"adr-tool/cli"
+
 	"github.com/alecthomas/kong"
 )
 
-type CLI struct {
-	Globals
-	Init InitCmd `cmd:"" help:"Setup new ADR configuration in the current project"`
-	New  NewCmd  `cmd:"" help:"Adds new ADR"`
-	List ListCmd `cmd:"" help:"Lists all existing ADRs"`
-}
-
 func main() {
 
-	cli := CLI{}
+	cli := cli.CLI{}
 
 	ctx := kong.Parse(&cli,
 		kong.Name("adr"),
-		kong.Description("ADR tool for your project"),
+		kong.Description("ADR tool for your project. \n Project details can be found at https://github.com/aholbreich/adr-tool"),
 		kong.UsageOnError(),
 		kong.ConfigureHelp(kong.HelpOptions{
 			Compact: true,
 			Summary: false,
 		}),
 		kong.Vars{
-			"version": "0.0.1",
+			"version": "0.0.2",
 		})
 
 	err := ctx.Run(&cli.Globals)

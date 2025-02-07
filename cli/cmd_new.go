@@ -1,4 +1,4 @@
-package main
+package cli
 
 import (
 	"encoding/json"
@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"adr-tool/model"
 
 	"github.com/fatih/color"
 )
@@ -28,8 +30,8 @@ func (r *NewCmd) Run() error {
 
 }
 
-func getConfig() AdrConfig {
-	var currentConfig AdrConfig
+func getConfig() model.AdrConfig {
+	var currentConfig model.AdrConfig
 
 	bytes, err := os.ReadFile(configFilePath)
 	if err != nil {
@@ -42,7 +44,7 @@ func getConfig() AdrConfig {
 	return currentConfig
 }
 
-func updateConfig(config AdrConfig) {
+func updateConfig(config model.AdrConfig) {
 	bytes, err := json.MarshalIndent(config, "", " ")
 	if err != nil {
 		panic(err)
@@ -50,12 +52,12 @@ func updateConfig(config AdrConfig) {
 	os.WriteFile(configFilePath, bytes, 0644)
 }
 
-func newAdr(config AdrConfig, adrName string) {
-	adr := Adr{
+func newAdr(config model.AdrConfig, adrName string) {
+	adr := model.Adr{
 		Title:  strings.Join([]string{adrName}, " "),
 		Date:   time.Now().Format("01-02-2006 15:04"),
 		Number: config.CurrentAdr,
-		Status: PROPOSED,
+		Status: model.PROPOSED,
 	}
 	template, err := template.ParseFiles(templateFilePath)
 	if err != nil {
