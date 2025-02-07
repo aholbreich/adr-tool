@@ -1,0 +1,49 @@
+name: Build and Release ADR Tool RPM
+
+on:
+  push:
+    branches:
+      - main
+  release:
+    types:
+      - created
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+        # Set up Go
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: "1.22"
+
+        # Cache Go modules
+      - name: Cache Go modules
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.mod') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+        # Install RPM build dependencies
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rpm golang
+
+        # Run Go tests
+      - name: Run Go tests
+        run: |
+          go test ./...
+
+        # Build ADR tool
+      - name: Build ADR tool
+        run: |
+          go build -o adr ./cmd
