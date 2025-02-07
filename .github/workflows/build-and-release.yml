@@ -19,27 +19,8 @@ jobs:
       # Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v2
-
-      - name: Check Git status and tag retrieval
-        run: |
-          # Check if we're in a Git repository
-          git status
-          git log --oneline -n 5
-
-          git config --list
-          git tag -l
-
-          # Try the describe command and see if it returns a valid tag
-          VERSION=$(git describe --tags --abbrev=0)
-          if [ -z "$VERSION" ]; then
-            echo "No tags found! Exiting..."
-            exit 1
-          fi
-
-          # Echo the version to verify
-          echo "VERSION: ${VERSION}"
-          echo "VERSION=${VERSION}" >> $GITHUB_ENV
-        shell: /usr/bin/bash -e {0}
+        with:
+          fetch-depth: 0
 
         # Set up Go
       - name: Set up Go
@@ -86,8 +67,17 @@ jobs:
       # Get version dynamically from Git tag
       - name: Determine Version
         run: |
-          echo "VERSION=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
-          echo "${VERSION}"
+          # Try to get the latest tag
+          VERSION=$(git describe --tags --abbrev=0 || echo "No tags found")
+
+          if [ "$VERSION" == "No tags found" ]; then
+            echo "No tags found, using commit hash instead"
+            VERSION=$(git rev-parse --short HEAD)
+          fi
+
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "Version set to: ${VERSION}"
+        shell: /usr/bin/bash -e {0}
 
         # Build ADR tool with version information
       - name: Build ADR tool
