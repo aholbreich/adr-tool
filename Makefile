@@ -2,6 +2,8 @@ BINARY_NAME=adr
 INSTALL_DIR=$(HOME)/bin
 
 build:
+	go fmt
+	go mod tidy
 	go build -o $(BINARY_NAME)
 
 install: build
