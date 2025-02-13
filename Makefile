@@ -32,6 +32,15 @@ cleancache: clean
 get-version:
 	@echo $(VERSION)-$(COUNT)-$(COMMIT_HASH)
 
+bump:
+	@echo "Current version: $(VERSION)"
+	@echo "Current commit hash: $(COMMIT_HASH)"
+	@echo "Current count: $(COUNT)"
+	@echo "Enter new version: "
+	@read new_version; \
+	git tag $$new_version; \
+	git push origin $$new_version
+
 amend:
 	git add .
 	git commit --amend --no-edit
