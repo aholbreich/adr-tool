@@ -1,10 +1,9 @@
-name: Build with Makefile
+name: Build & Release with Makefile
 
 on:
   push:
-    branches:
-      - main
-
+    tags:
+      - '*'
 
 jobs:
   build:
@@ -41,8 +40,34 @@ jobs:
       # Run Makefile commands
       - name: Run Makefile Build
         run: |
-            go list -m all
-            make build
+          go list -m all
+          make build
 
       - name: Run Makefile Tests
         run: make test
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v3
+        with:
+          name: adr
+          path: adr
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download binary
+        uses: actions/download-artifact@v3
+        with:
+          name: adr
+          path: dist
+
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref }}
+          name: Release ${{ github.ref }}
+          body: |
+            TODO
+          files: |
+            dist/adr
