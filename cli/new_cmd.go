@@ -1,11 +1,10 @@
 package cli
 
 import (
-	"fmt"
-	"strings"
-
 	"adr-tool/internal/adr"
 	"adr-tool/internal/config"
+	"fmt"
+	"strings"
 )
 
 // CLI Command
