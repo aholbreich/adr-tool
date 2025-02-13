@@ -59,6 +59,10 @@ jobs:
         run: |
           sudo gem install --no-document fpm
 
+      # Install Go dependencies
+      - name: Install dependencies
+        run: go mod tidy
+
         # Run Go tests
       - name: Run Go tests
         run: |
