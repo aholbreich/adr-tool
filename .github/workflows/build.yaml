@@ -1,5 +1,8 @@
 name: Build & Release with Makefile
 
+permissions:
+  contents: write
+
 on:
   push:
     tags:
@@ -65,8 +68,8 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref }}
-          name: Release ${{ github.ref }}
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
           body: |
             TODO
           files: |
