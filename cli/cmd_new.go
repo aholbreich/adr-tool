@@ -2,16 +2,14 @@ package cli
 
 import (
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"time"
 
 	"adr-tool/model"
-
-	"github.com/fatih/color"
 )
 
 // CLI Command
@@ -22,54 +20,83 @@ type NewCmd struct {
 // Command Handler
 func (r *NewCmd) Run() error {
 	adrName := strings.Join(r.AdrName, " ")
-	currentConfig := getConfig()
-	currentConfig.CurrentAdr++
-	updateConfig(currentConfig)
-	newAdr(currentConfig, adrName)
-	return nil
 
+	// Load existing configuration
+	currentConfig, err := getConfig()
+	if err != nil {
+		fmt.Println("No ADR configuration found!")
+		fmt.Println("Start by initializing ADR configuration, check 'adr init --help' for more help")
+		return err
+	}
+
+	// Increment ADR number and update config
+	currentConfig.CurrentAdr++
+	if err := updateConfig(currentConfig); err != nil {
+		return fmt.Errorf("failed to update config: %w", err)
+	}
+
+	// Create the new ADR
+	if err := newAdr(currentConfig, adrName); err != nil {
+		return fmt.Errorf("failed to create new ADR: %w", err)
+	}
+
+	fmt.Printf("New ADR %d was successfully written to: %s\n", currentConfig.CurrentAdr, configFolderPath)
+	return nil
 }
 
-func getConfig() model.AdrConfig {
+// Load ADR configuration from file
+func getConfig() (model.AdrConfig, error) {
 	var currentConfig model.AdrConfig
 
 	bytes, err := os.ReadFile(configFilePath)
 	if err != nil {
-		color.Red("No ADR configuration is found!")
-		color.HiGreen("Start by initializing ADR configuration, check 'adr init --help' for more help")
-		os.Exit(1)
+		return currentConfig, err
 	}
 
-	json.Unmarshal(bytes, &currentConfig)
-	return currentConfig
+	if err := json.Unmarshal(bytes, &currentConfig); err != nil {
+		return currentConfig, err
+	}
+
+	return currentConfig, nil
 }
 
-func updateConfig(config model.AdrConfig) {
+// Save updated ADR configuration to file
+func updateConfig(config model.AdrConfig) error {
 	bytes, err := json.MarshalIndent(config, "", " ")
 	if err != nil {
-		panic(err)
+		return err
 	}
-	os.WriteFile(configFilePath, bytes, 0644)
+	return os.WriteFile(configFilePath, bytes, 0644)
 }
 
-func newAdr(config model.AdrConfig, adrName string) {
+// Create a new ADR file with the given name
+func newAdr(config model.AdrConfig, adrName string) error {
 	adr := model.Adr{
-		Title:  strings.Join([]string{adrName}, " "),
-		Date:   time.Now().Format("01-02-2006 15:04"),
+		Title:  adrName,
+		Date:   time.Now().Format("2006-01-02 15:04"), // ISO 8601 format
 		Number: config.CurrentAdr,
 		Status: model.PROPOSED,
 	}
-	template, err := template.ParseFiles(templateFilePath)
+
+	tpl, err := template.ParseFiles(templateFilePath)
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("failed to parse template: %w", err)
 	}
-	adrFileName := strconv.Itoa(adr.Number) + "-" + strings.Join(strings.Split(strings.Trim(adr.Title, "\n \t"), " "), "-") + ".md"
+
+	// Sanitize and build the filename
+	adrFileName := fmt.Sprintf("%03d-%s.md", adr.Number, strings.Join(strings.Split(strings.TrimSpace(adr.Title), " "), "-"))
 	adrFullPath := filepath.Join(config.BaseDir, adrFileName)
+
 	f, err := os.Create(adrFullPath)
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("failed to create ADR file: %w", err)
 	}
-	template.Execute(f, adr)
-	f.Close()
-	color.Green("New ADR " + strconv.Itoa(adr.Number) + " was successfully written to : " + adrFullPath)
+	defer f.Close()
+
+	// Render template into the new ADR file
+	if err := tpl.Execute(f, adr); err != nil {
+		return fmt.Errorf("failed to render template: %w", err)
+	}
+
+	return nil
 }
