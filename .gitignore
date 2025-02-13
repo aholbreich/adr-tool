@@ -9,7 +9,7 @@
 *.dylib
 
 ##Specificaly generated file as in README.md
-adr
+/adr
 
 # Test binary, built with `go test -c`
 *.test
