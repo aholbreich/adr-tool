@@ -1,11 +1,12 @@
 package cli
 
 import (
-	"adr-tool/internal/config"
 	"fmt"
 	"os"
 	"sort"
 	"unicode"
+
+	"github.com/aholbreich/adr-tool/internal/config"
 )
 
 // CLI Command

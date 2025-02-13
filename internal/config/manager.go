@@ -1,10 +1,11 @@
 package config
 
 import (
-	"adr-tool/internal/model"
 	"encoding/json"
 	"fmt"
 	"os"
+
+	"github.com/aholbreich/adr-tool/internal/model"
 )
 
 type ConfigManager struct{}

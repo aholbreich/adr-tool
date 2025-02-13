@@ -1,4 +1,4 @@
-name: Build witn Makefile
+name: Build with Makefile
 
 on:
   push:

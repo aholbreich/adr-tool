@@ -1,8 +1,7 @@
 package main
 
 import (
-	"adr-tool/cli"
-
+	"github.com/aholbreich/adr-tool/cli"
 	"github.com/alecthomas/kong"
 )
 

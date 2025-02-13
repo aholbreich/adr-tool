@@ -1,4 +1,4 @@
-module adr-tool
+module github.com/aholbreich/adr-tool
 
 go 1.23
 
