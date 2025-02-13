@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"adr-tool/internal/config"
 	"fmt"
 	"os"
 	"sort"
@@ -18,7 +19,8 @@ func (r *ListCmd) Run() error {
 	}
 
 	if len(adrs) == 0 {
-		fmt.Printf("No ADRs found in %s.\n", configFolderPath)
+		pathResolver := config.NewPathResolver()
+		fmt.Printf("No ADRs found in %s.\n", pathResolver.ConfigFolderPath())
 		return nil
 	}
 
@@ -32,7 +34,10 @@ func (r *ListCmd) Run() error {
 
 // List ADR files in reverse order
 func (r *ListCmd) listADRs() ([]string, error) {
-	entries, err := os.ReadDir(configFolderPath)
+
+	pathResolver := config.NewPathResolver()
+
+	entries, err := os.ReadDir(pathResolver.ConfigFolderPath())
 	if err != nil {
 		return nil, err
 	}

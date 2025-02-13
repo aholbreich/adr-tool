@@ -1,4 +1,3 @@
-
 # {{.Number}}. {{.Title}}
 
 Status Date: {{.Date}}
@@ -17,5 +16,3 @@ Contributors: ...
 ## Options considered
 
 ## Advices
- 
-
