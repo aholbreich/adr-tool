@@ -34,13 +34,17 @@ jobs:
           path: |
             ~/go/pkg/mod
             /tmp/apt-cache
-          key: ${{ runner.os }}-go-apt-${{ hashFiles('**/go.mod', '**/apt-get.lock') }}
+          key: ${{ runner.os }}-go-apt-${{ hashFiles('**/go.sum', '**/apt-get.lock') }}
           restore-keys: |
             ${{ runner.os }}-go-apt-
 
       # Run Makefile commands
       - name: Run Makefile Build
-        run: make build
+        run: |
+            go env
+            go list -m all
+            make cleancache
+            make build
 
       - name: Run Makefile Tests
         run: make test

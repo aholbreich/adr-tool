@@ -26,5 +26,13 @@ clean:
 	rm -f $(BINARY_NAME)
 
 # Clean Go build caches
-cleancache:
+cleancache: clean
 	go clean -cache -testcache -modcache
+
+get-version:
+	@echo $(VERSION)-$(COUNT)-$(COMMIT_HASH)
+
+amend:
+	git add .
+	git commit --amend --no-edit
+	git push --force
