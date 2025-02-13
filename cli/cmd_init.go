@@ -16,7 +16,7 @@ type InitCmd struct {
 }
 
 // Command Handler
-func (r *InitCmd) Run(ctx *Globals) error {
+func (r *InitCmd) Run() error {
 	color.White("Initializing ADR configuration at %s", configFolderPath)
 
 	if !isGitRepo() {
