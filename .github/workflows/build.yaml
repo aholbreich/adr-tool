@@ -1,4 +1,4 @@
-name: Build and Release ADR Tool RPM
+name: Build witn Makefile
 
 on:
   push:

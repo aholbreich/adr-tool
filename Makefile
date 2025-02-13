@@ -9,6 +9,7 @@ COUNT=$(shell git rev-list $(VERSION)..HEAD --count)
 build:
 	go fmt
 	go mod tidy
+	go mod download
 	go build -o $(BINARY_NAME) -ldflags "-X main.version=$(VERSION)-$(COUNT)-$(COMMIT_HASH)"
 
 # Run tests

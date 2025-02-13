@@ -1,5 +1,5 @@
 module adr-tool
 
-go 1.22.2
+go 1.23
 
 require github.com/alecthomas/kong v1.7.0
