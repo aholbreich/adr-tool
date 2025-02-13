@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"adr-tool/internal/adr"
 	"adr-tool/internal/config"
 	"fmt"
 )
@@ -13,7 +12,7 @@ type InitCmd struct {
 // Command Handler
 func (r *InitCmd) Run() error {
 
-	pathResolver := config.NewPathResolver()
+	pathResolver := config.PathResolverInst()
 
 	if !pathResolver.IsFilepathGitRepo() {
 		if !confirmAction(".git folder is not detected. This does not seem to be the root of your project. Do you still want to proceed (Y/n)?") {
@@ -22,10 +21,9 @@ func (r *InitCmd) Run() error {
 		}
 	}
 
-	//TODO should be Config Manager
-	adrManager := adr.NewManager(pathResolver)
+	mgr := config.NewConfigManager()
 
-	if err := adrManager.InitConfig(); err != nil {
+	if err := mgr.InitConfig(); err != nil {
 		fmt.Println("Failed to initialize ADRs:", err)
 		return nil
 	}

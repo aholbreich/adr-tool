@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"sync"
 )
 
 const (
@@ -18,14 +19,23 @@ type PathResolver struct {
 	BaseDir string
 }
 
+var (
+	instance *PathResolver
+	once     sync.Once
+)
+
 // NewPathResolver initializes a new PathResolver with the working directory
-func NewPathResolver() *PathResolver {
-	dir, err := os.Getwd()
-	if err != nil {
-		fmt.Fprintln(os.Stderr, "Error: Unable to get the current working directory. Please check your environment and try again.")
-		os.Exit(1) // Exit with status code 1 indicating failure
-	}
-	return &PathResolver{BaseDir: dir}
+func PathResolverInst() *PathResolver {
+
+	once.Do(func() { // Ensures that the singleton is only initialized once.
+		dir, err := os.Getwd()
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "Error: Unable to get the current working directory. Please check your environment and try again.")
+			os.Exit(1) // Exit with status code 1 indicating failure
+		}
+		instance = &PathResolver{BaseDir: dir}
+	})
+	return instance
 }
 
 func (p *PathResolver) ConfigFolderPath() string {

@@ -19,7 +19,7 @@ func (r *ListCmd) Run() error {
 	}
 
 	if len(adrs) == 0 {
-		pathResolver := config.NewPathResolver()
+		pathResolver := config.PathResolverInst()
 		fmt.Printf("No ADRs found in %s.\n", pathResolver.ConfigFolderPath())
 		return nil
 	}
@@ -35,7 +35,7 @@ func (r *ListCmd) Run() error {
 // List ADR files in reverse order
 func (r *ListCmd) listADRs() ([]string, error) {
 
-	pathResolver := config.NewPathResolver()
+	pathResolver := config.PathResolverInst()
 
 	entries, err := os.ReadDir(pathResolver.ConfigFolderPath())
 	if err != nil {

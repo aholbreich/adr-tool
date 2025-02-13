@@ -28,15 +28,13 @@ func (r *NewCmd) Run() error {
 
 	// Increment ADR number and update config
 	currentConfig.CurrentAdr++
-	if err := cfgManager.SaveConfig(currentConfig); err != nil {
+	if err := cfgManager.UpdateConfig(currentConfig); err != nil {
 		return fmt.Errorf("failed to update config: %w", err)
 	}
 
 	// Create the new ADR
 
-	adrManager := adr.NewManager(config.NewPathResolver())
-
-	if err := adrManager.CreateNewAdr(currentConfig, adrName); err != nil {
+	if err := adr.NewAdrManager().CreateNewAdr(currentConfig, adrName); err != nil {
 		return fmt.Errorf("failed to create new ADR: %w", err)
 	}
 

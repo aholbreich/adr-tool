@@ -15,7 +15,7 @@ type TemplateManager struct {
 }
 
 // NewManager initializes a new Template Manager
-func NewManager() *TemplateManager {
+func NewTplManager() *TemplateManager {
 	return &TemplateManager{}
 }
 
