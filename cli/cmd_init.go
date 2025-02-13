@@ -8,8 +8,6 @@ import (
 
 	"adr-tool/config"
 	"adr-tool/model"
-
-	"github.com/fatih/color"
 )
 
 type InitCmd struct {
@@ -17,11 +15,11 @@ type InitCmd struct {
 
 // Command Handler
 func (r *InitCmd) Run() error {
-	color.White("Initializing ADR configuration at %s", configFolderPath)
+	fmt.Printf("Initializing ADR configuration at %s \n", configFolderPath)
 
 	if !isGitRepo() {
 		if !confirmAction(".git folder is not detected. This does not seem to be the root of your project. Do you still want to proceed (Y/n)?") {
-			color.Red("Initialization aborted by the user.")
+			fmt.Printf("Initialization aborted by the user.\n")
 			return nil
 		}
 	}
@@ -33,7 +31,7 @@ func (r *InitCmd) Run() error {
 		return fmt.Errorf("failed to initialize template: %w", err)
 	}
 
-	color.Green("ADR configuration initialized successfully.")
+	fmt.Println("ADR configuration initialized successfully.")
 	return nil
 }
 
@@ -51,7 +49,7 @@ func initConfig(baseDir string) error {
 			return fmt.Errorf("failed to create directory: %w", err)
 		}
 	} else {
-		color.Red("Directory %s already exists. Not overriding.", baseDir)
+		fmt.Printf("Directory %s already exists. Not overriding.\n", baseDir)
 		os.Exit(-1)
 	}
 	config := model.AdrConfig{BaseDir: baseDir, CurrentAdr: 0}
@@ -59,7 +57,7 @@ func initConfig(baseDir string) error {
 	if err != nil {
 		return fmt.Errorf("failed to marshal configuration: %w", err)
 	}
-	color.White("Writing new configuration at: %s", configFilePath)
+	fmt.Printf("Writing new configuration at: %s \n", configFilePath)
 	if err := os.WriteFile(configFilePath, bytes, 0644); err != nil {
 		return fmt.Errorf("failed to write configuration: %w", err)
 	}
