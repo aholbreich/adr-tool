@@ -41,9 +41,7 @@ jobs:
       # Run Makefile commands
       - name: Run Makefile Build
         run: |
-            go env
             go list -m all
-            make cleancache
             make build
 
       - name: Run Makefile Tests
