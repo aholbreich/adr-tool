@@ -7,8 +7,6 @@ import (
 	"os"
 )
 
-const configFilePath = ".adr/config.json"
-
 type ConfigManager struct{}
 
 func NewConfigManager() *ConfigManager {
@@ -17,7 +15,7 @@ func NewConfigManager() *ConfigManager {
 
 func (cm *ConfigManager) LoadConfig() (model.AdrConfig, error) {
 	var config model.AdrConfig
-	bytes, err := os.ReadFile(configFilePath)
+	bytes, err := os.ReadFile(PathResolverInst().ConfigFilePath())
 	if err != nil {
 		return config, err
 	}
@@ -30,7 +28,8 @@ func (cm *ConfigManager) UpdateConfig(config model.AdrConfig) error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(configFilePath, bytes, 0644)
+
+	return os.WriteFile(PathResolverInst().ConfigFilePath(), bytes, 0644)
 }
 
 // Init initializes the ADR configuration folder
