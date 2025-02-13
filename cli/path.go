@@ -2,6 +2,7 @@ package cli
 
 import (
 	"errors"
+	"os"
 	"path/filepath"
 	"runtime"
 )
@@ -24,12 +25,11 @@ func Filename() (string, error) {
 	return filename, nil
 }
 
-// Dirname is the __dirname equivalent
 func getWorkDir() string {
 
-	filename, err := Filename()
+	dir, err := os.Getwd()
 	if err != nil {
 		panic(err)
 	}
-	return filepath.Dir(filename)
+	return dir
 }
