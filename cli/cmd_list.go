@@ -2,45 +2,53 @@ package cli
 
 import (
 	"fmt"
-	"log"
 	"os"
+	"sort"
 	"unicode"
 )
 
 // CLI Command
-type ListCmd struct {
-}
+type ListCmd struct{}
 
 // Command Handler
 func (r *ListCmd) Run() error {
-
-	entries, err := os.ReadDir(configFolderPath)
-
+	adrs, err := r.listADRs()
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("failed to list ADRs: %w", err)
 	}
 
-	var adrs []string
-
-	for _, e := range entries {
-		if unicode.IsDigit(rune(e.Name()[0])) { //Starst with digit? Must be adr file
-			adrs = append(adrs, e.Name())
-		}
+	if len(adrs) == 0 {
+		fmt.Printf("No ADRs found in %s.\n", configFolderPath)
+		return nil
 	}
 
-	reverse(adrs)
-
+	fmt.Println("Architecture Decision Records:")
 	for _, adr := range adrs {
-		fmt.Println(adr)
+		fmt.Println(" -", adr)
 	}
 
 	return nil
-
 }
 
-func reverse(ss []string) {
-	last := len(ss) - 1
-	for i := 0; i < len(ss)/2; i++ {
-		ss[i], ss[last-i] = ss[last-i], ss[i]
+// List ADR files in reverse order
+func (r *ListCmd) listADRs() ([]string, error) {
+	entries, err := os.ReadDir(configFolderPath)
+	if err != nil {
+		return nil, err
 	}
+
+	var adrs []string
+	for _, e := range entries {
+		if e.IsDir() {
+			continue
+		}
+		name := e.Name()
+		if len(name) > 0 && unicode.IsDigit(rune(name[0])) { // Starts with digit? Must be an ADR file
+			adrs = append(adrs, name)
+		}
+	}
+
+	// Reverse order by sorting in descending order
+	sort.Sort(sort.Reverse(sort.StringSlice(adrs)))
+	return adrs, nil
 }
