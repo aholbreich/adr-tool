@@ -1,8 +1,7 @@
 # ADR Tool Go
 
-Yet another ADR Tool written in Go.
+Opinionated version of ADR toot written in go. Initially inspired by the [adr-tools](https://github.com/npryce/adr-tools).
 
-Inspired by the [adr-tools](https://github.com/npryce/adr-tools) but using the Go instead of Bash.
 
 # Installation 
 
@@ -25,18 +24,17 @@ install rpm with `yum` or `dnf`
 sudo dnf install adr-tool
 
 ```
-Checkout [rpm-repo](https://github.com/aholbreich/rpm-repo) in case of any issues.
+Find support in [rpm-repo](https://github.com/aholbreich/rpm-repo) project home in case of any issues.
 
 ## Local build
 
-```bash
-#Build locally
-go build -o adr
-# Make available to the system
-sudo mv adr /usr/local/bin/adr
+The straightforward way to compile it on your own.
 
-# Alternatively make it available to your user only
-mv adr ~/bin/adr
+```bash
+git clone https://github.com/aholbreich/adr-tool.git
+cd adr-tool
+# compile and put to $(HOME)/bin
+make install
 
 ```
 
