@@ -4,9 +4,12 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"time"
+	"unicode"
 
+	"github.com/aholbreich/adr-tool/internal/config"
 	"github.com/aholbreich/adr-tool/internal/model"
 	"github.com/aholbreich/adr-tool/internal/template"
 )
@@ -53,4 +56,27 @@ func (m *AdrManager) CreateNewAdr(currentConfig model.AdrConfig, adrName string)
 	}
 
 	return nil
+}
+
+// List ADR files in reverse order
+func (m *AdrManager) GetADRList() ([]string, error) {
+
+	entries, err := os.ReadDir(config.PathResolverInst().ConfigFolderPath())
+	if err != nil {
+		return nil, err
+	}
+
+	var adrs []string
+	for _, e := range entries {
+		if e.IsDir() {
+			continue
+		}
+		name := e.Name()
+		if len(name) > 0 && unicode.IsDigit(rune(name[0])) { // Starts with digit? Must be an ADR file
+			adrs = append(adrs, name)
+		}
+	}
+
+	sort.Sort(sort.Reverse(sort.StringSlice(adrs))) // Reverse order
+	return adrs, nil
 }
