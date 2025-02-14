@@ -43,29 +43,40 @@ amend:
 
 # Binaries distribution
 binary_linux_amd64: 
-	GOOS=linux GOARCH=amd64 go build -o $(BINARY_NAME) -ldflags "-X main.version=$(VERSION)-$(COUNT)-$(COMMIT_HASH)"
-	tar czvf adr-linux-amd64.tar.gz $(BINARY_NAME)
+	mkdir -p build/linux-amd64
+	GOOS=linux GOARCH=amd64 go build -o build/linux-amd64/$(BINARY_NAME) -ldflags "-X main.version=$(VERSION)-$(COUNT)-$(COMMIT_HASH)"
+	tar -C build/linux-amd64 -czvf adr-linux-amd64.tar.gz $(BINARY_NAME)
+	rm -rf build/linux-amd64
 
 binary_linux_arm64:
-	GOOS=linux GOARCH=arm64 go build -o $(BINARY_NAME) -ldflags "-X main.version=$(VERSION)-$(COUNT)-$(COMMIT_HASH)" 
-	tar czvf adr-adr-linux-arm64.tar.gz $(BINARY_NAME) 
+	mkdir -p build/linux-arm64
+	GOOS=linux GOARCH=arm64 go build -o build/linux-arm64/$(BINARY_NAME) -ldflags "-X main.version=$(VERSION)-$(COUNT)-$(COMMIT_HASH)"
+	tar -C build/linux-arm64 -czvf adr-linux-arm64.tar.gz $(BINARY_NAME)
+	rm -rf build/linux-arm64
 
 binary_darwin_amd64: 
-	GOOS=darwin GOARCH=amd64 go build -o $(BINARY_NAME)-darwin-amd64 -ldflags "-X main.version=$(VERSION)-$(COUNT)-$(COMMIT_HASH)"
-	tar czvf adr-darwin-amd64.tar.gz $(BINARY_NAME)
+	mkdir -p build/darwin-amd64
+	GOOS=darwin GOARCH=amd64 go build -o build/darwin-amd64/$(BINARY_NAME) -ldflags "-X main.version=$(VERSION)-$(COUNT)-$(COMMIT_HASH)"
+	tar -C build/darwin-amd64 -czvf adr-darwin-amd64.tar.gz $(BINARY_NAME)
+	rm -rf build/darwin-amd64
 
 binary_darwin_arm64: 
-	GOOS=darwin GOARCH=arm64 go build -o $(BINARY_NAME)-darwin-arm64 -ldflags "-X main.version=$(VERSION)-$(COUNT)-$(COMMIT_HASH)"
-	tar czvf adr-darwin-arm64.tar.gz $(BINARY_NAME)
+	mkdir -p build/darwin-arm64
+	GOOS=darwin GOARCH=arm64 go build -o build/darwin-arm64/$(BINARY_NAME) -ldflags "-X main.version=$(VERSION)-$(COUNT)-$(COMMIT_HASH)"
+	tar -C build/darwin-arm64 -czvf adr-darwin-arm64.tar.gz $(BINARY_NAME)
+	rm -rf build/darwin-arm64
 
 binary_windows_amd64: 
-	GOOS=windows GOARCH=amd64 go build -o $(BINARY_NAME).exe -ldflags "-X main.version=$(VERSION)-$(COUNT)-$(COMMIT_HASH)"
-	zip adr-windows-amd64.zip $(BINARY_NAME).exe
+	mkdir -p build/windows-amd64
+	GOOS=windows GOARCH=amd64 go build -o build/windows-amd64/$(BINARY_NAME).exe -ldflags "-X main.version=$(VERSION)-$(COUNT)-$(COMMIT_HASH)"
+	zip -j adr-windows-amd64.zip build/windows-amd64/$(BINARY_NAME).exe
+	rm -rf build/windows-amd64
 
 binary_windows_arm64:
-	GOOS=windows GOARCH=arm64 go build -o $(BINARY_NAME).exe -ldflags "-X main.version=$(VERSION)-$(COUNT)-$(COMMIT_HASH)"
-	zip adr-windows-arm.zip $(BINARY_NAME).exe
-
+	mkdir -p build/windows-arm64
+	GOOS=windows GOARCH=arm64 go build -o build/windows-arm64/$(BINARY_NAME).exe -ldflags "-X main.version=$(VERSION)-$(COUNT)-$(COMMIT_HASH)"
+	zip -j adr-windows-arm64.zip build/windows-arm64/$(BINARY_NAME).exe
+	rm -rf build/windows-arm64
 dists: binary_linux_amd64 binary_linux_arm64 binary_darwin_amd64 binary_darwin_arm64 binary_windows_amd64 binary_windows_arm64
 
 

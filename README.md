@@ -5,6 +5,10 @@ Opinionated version of ADR tool written in go. Initially inspired by the [adr-to
 
 # Installation 
 
+## Binary Download
+
+Binaries are available for Linux, Mac OS, Windows. Please Check [Releases page](https://github.com/aholbreich/adr-tool/releases).
+
 ## RPM (Fedora, RedHat)
 
 First Add RPM repository
