@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/aholbreich/adr-tool/internal/adr"
 	"github.com/aholbreich/adr-tool/internal/config"
@@ -26,7 +27,11 @@ func (r *ListCmd) Run() error {
 
 	fmt.Println("Architecture Decision Records:")
 	for _, adr := range adrs {
-		fmt.Println(" -", adr)
+
+		// Format: 001-Title [Status]
+		adrTitle := strings.TrimSuffix(adr.Title, ".md")
+		formattedAdr := fmt.Sprintf("%s [%s]", adrTitle, adr.Status)
+		fmt.Println(" -", formattedAdr)
 	}
 
 	return nil

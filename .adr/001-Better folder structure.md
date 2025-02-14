@@ -1,15 +1,15 @@
 
+
 # 001 Better folder structure
 
 Status Date: 2025-02-13 12:38
 Driver: @aHolbreich
 Contributors: ...
+Status: Accepted
 
-## Status
-Accepted
+** This ADR is more of demonstration rather than documentation. Don't take it too serious** 
 
 # Context 
-*This ADR is more of demonstration rather than documentation. Don't take it too serious*
 The current project structure seem not to support me well for me.
 The code seem to not support good extensibility and seem not to adhere to best golang practices. 
 
@@ -17,11 +17,11 @@ The code seem to not support good extensibility and seem not to adhere to best g
 I'm going to choose option 1 understanding that refactoring would cost some time. However this is great enable for future improvements
 
 ### Consequences
-
+Better adherence to the Go dev practices. Better testability, better cohesion inside of packages via better "layering"
+No significant downsizes.
 ## Options considered
-
 ### 1. Internal package for all the logic
-
+```
 .
 ├── cmd/                    // CLI Commands
 │   ├── root.go
@@ -32,11 +32,17 @@ I'm going to choose option 1 understanding that refactoring would cost some time
 │   │   └── manager.go
 │   ├── template/           // Template handling logic
 │   │   └── manager.go
+│   └── model/
+│   │   └── model.go        // Model
 │   └── adr/                // ADR business logic
 │       ├── manager.go
+│       ├── sorter.go
 │       └── model.go
+
 └── templates/              // Static template files
     └── default.md
+
+```
 
 ### 2. Not touching it
     

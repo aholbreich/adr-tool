@@ -1,20 +1,18 @@
 package model
 
-type AdrStatus string
-
 // TODO
 const (
-	PROPOSED   AdrStatus = "Proposed"
-	ACCEPTED   AdrStatus = "Accepted"
-	DEPRECATED AdrStatus = "Deprecated"
-	SUPERSEDED AdrStatus = "Superseded"
+	PROPOSED   string = "Proposed"
+	ACCEPTED   string = "Accepted"
+	DEPRECATED string = "Deprecated"
+	SUPERSEDED string = "Superseded"
 )
 
 type Adr struct {
 	Number int
 	Title  string
 	Date   string
-	Status AdrStatus
+	Status string
 }
 
 type AdrConfig struct {

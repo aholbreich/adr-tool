@@ -79,8 +79,10 @@ User your favored Editor, Open the desired ADR file under ./.adr/ folder change 
 ## TODOs
 
 * [x] Add build pipeline
-* [ ] Add ADR Status Info in listing (Require file parsing)
-* [ ] Add Status transition? 
+* [x] Add ADR Status Info in listing
+* [ ] Too long being not in final status warning
+* [ ] Add Status transition?
+* [ ] Color codes?
 * [ ] Release notes (See https://github.com/git-chglog/git-chglog)
 
 
