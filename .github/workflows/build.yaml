@@ -6,11 +6,14 @@ permissions:
 on:
   push:
     tags:
-      - '*'
+      - "*"
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: [binary_linux_amd64, binary_linux_arm64, binary_darwin_amd64, binary_darwin_arm64, binary_windows_amd64, binary_windows_arm64]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -48,12 +51,16 @@ jobs:
 
       - name: Run Makefile Tests
         run: make test
+      
+      # Goes parallel for each target from the matrix (see above)
+      - name: Build and package for ${{ matrix.target }}
+        run: make ${{ matrix.target }}
 
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
-          name: adr
-          path: adr
+          name: ${{ matrix.target }}
+          path: adr-*.*
 
   release:
     needs: build
