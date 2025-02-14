@@ -2,12 +2,12 @@
 
 # 001 Better folder structure
 
-Status Date: 2025-02-13 12:38
-Driver: @aHolbreich
-Contributors: ...
-Status: Accepted
+* Status Date: 2025-02-13 12:38
+* Driver: @aHolbreich
+* Contributors: ...
+* Status: Accepted
 
-** This ADR is more of demonstration rather than documentation. Don't take it too serious** 
+**This ADR is more of demonstration rather than documentation. Don't take it too serious** 
 
 # Context 
 The current project structure seem not to support me well for me.
@@ -38,7 +38,6 @@ No significant downsizes.
 │       ├── manager.go
 │       ├── sorter.go
 │       └── model.go
-
 └── templates/              // Static template files
     └── default.md
 
