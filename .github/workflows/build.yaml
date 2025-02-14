@@ -69,7 +69,7 @@ jobs:
       - name: Download binary
         uses: actions/download-artifact@v4
         with:
-          name: adr
+          name: adr-*.*
           path: dist
 
       - name: Create release
@@ -78,6 +78,6 @@ jobs:
           tag_name: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
           body: |
-            TODO
+            Multi-platform release
           files: |
-            dist/adr
+            dist/adr-*.*
