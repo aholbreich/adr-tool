@@ -1,6 +1,6 @@
 # ADR Tool Go
 
-Opinionated version of ADR toot written in go. Initially inspired by the [adr-tools](https://github.com/npryce/adr-tools).
+Opinionated version of ADR tool written in go. Initially inspired by the [adr-tools](https://github.com/npryce/adr-tools).
 
 
 # Installation 
@@ -61,6 +61,7 @@ this will create a new numbered ADR in folder `.adr`:
 ```bash
 adr list 
 ```
+Shows you list of your ADRs with corresponding status
 
 ## Help and Docu
 
@@ -80,6 +81,7 @@ User your favored Editor, Open the desired ADR file under ./.adr/ folder change 
 
 * [x] Add build pipeline
 * [x] Add ADR Status Info in listing
+* [x] Multi platform binaries
 * [ ] Too long being not in final status warning
 * [ ] Add Status transition?
 * [ ] Color codes?
@@ -90,7 +92,9 @@ User your favored Editor, Open the desired ADR file under ./.adr/ folder change 
 
 ```bash
 # VBuild and try local
-go build -o adr
+make build
 
-./adr
+make test
+
+make clean
 ```

@@ -66,11 +66,11 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Download binary
+      - name: Download binaries
         uses: actions/download-artifact@v4
         with:
-          name: adr-*.*
           path: dist
+          merge-multiple: true
 
       - name: Create release
         uses: softprops/action-gh-release@v1
@@ -80,4 +80,4 @@ jobs:
           body: |
             Multi-platform release
           files: |
-            dist/adr-*.*
+            dist/**/*
