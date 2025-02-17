@@ -1,6 +1,8 @@
 # ADR Tool Go
 
-Opinionated version of ADR tool written in go. Initially inspired by the [adr-tools](https://github.com/npryce/adr-tools).
+Opinionated version of ADR tool written in go. 
+For general introduction into the topic, please consider to read 
+[Architecture Decision Records: A Tool for Experienced Engineers](https://alexander.holbreich.org/adr_method/)
 
 
 # Installation 
