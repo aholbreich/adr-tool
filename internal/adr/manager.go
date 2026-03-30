@@ -16,6 +16,10 @@ import (
 	"golang.org/x/text/language"
 )
 
+var adrFileNamePattern = regexp.MustCompile(`^(\d+)-.+\.md$`)
+var invalidSlugCharsPattern = regexp.MustCompile(`[^a-z0-9-]+`)
+var repeatedHyphensPattern = regexp.MustCompile(`-+`)
+
 type AdrManager struct {
 }
 
@@ -26,33 +30,27 @@ func NewAdrManager() *AdrManager {
 
 // Create a new ADR file with the given name
 func (m *AdrManager) CreateNewAdr(currentConfig model.AdrConfig, adrName string) error {
-
 	adr := model.Adr{
 		Title:  adrName,
-		Date:   time.Now().Format("2006-01-02 15:04"), // ISO 8601 format
+		Date:   time.Now().Format("2006-01-02 15:04"),
 		Number: currentConfig.CurrentAdr,
 		Status: model.PROPOSED,
 	}
-
-	// Use TemplateManager to load template
 
 	tpl, err := template.NewTplManager().LoadTemplate()
 	if err != nil {
 		return fmt.Errorf("failed to load template: %w", err)
 	}
 
-	// Sanitize and build the filename
-	adrFileName := fmt.Sprintf("%03d-%s.md", adr.Number, strings.Join(strings.Split(strings.TrimSpace(adr.Title), " "), "-"))
+	adrFileName := buildADRFileName(adr.Number, adr.Title)
 	adrFullPath := filepath.Join(currentConfig.BaseDir, adrFileName)
 
-	// Create and write to the ADR file
 	f, err := os.Create(adrFullPath)
 	if err != nil {
 		return fmt.Errorf("failed to create ADR file: %w", err)
 	}
 	defer f.Close()
 
-	// Render template into the new ADR file
 	if err := tpl.Execute(f, adr); err != nil {
 		return fmt.Errorf("failed to render template: %w", err)
 	}
@@ -61,7 +59,8 @@ func (m *AdrManager) CreateNewAdr(currentConfig model.AdrConfig, adrName string)
 }
 
 func (m *AdrManager) GetADRList() ([]model.Adr, error) {
-	entries, err := os.ReadDir(config.PathResolverInst().ConfigFolderPath())
+	configDir := config.PathResolverInst().ConfigFolderPath()
+	entries, err := os.ReadDir(configDir)
 	if err != nil {
 		return nil, err
 	}
@@ -71,30 +70,27 @@ func (m *AdrManager) GetADRList() ([]model.Adr, error) {
 		if e.IsDir() {
 			continue
 		}
+
 		name := e.Name()
-		if len(name) > 0 {
-			num, err := extractNumberFromString(name)
-			if err != nil {
-				continue // not having number is not ADR file.
-			}
-
-			adrPath := config.PathResolverInst().ConfigFolderPath() + "/" + name
-			status, err := extractStatus(adrPath)
-			if err != nil {
-				status = "Unknown" // Default to "Unknown" if status cannot be extracted
-			}
-
-			adr := model.Adr{
-				Number: num,
-				Title:  name,
-				Status: status,
-			}
-			adrs = append(adrs, adr)
+		num, err := extractNumberFromString(name)
+		if err != nil {
+			continue
 		}
+
+		adrPath := filepath.Join(configDir, name)
+		status, err := extractStatus(adrPath)
+		if err != nil {
+			status = "Unknown"
+		}
+
+		adrs = append(adrs, model.Adr{
+			Number: num,
+			Title:  name,
+			Status: status,
+		})
 	}
 
 	SortAdrListReverse(adrs)
-
 	return adrs, nil
 }
 
@@ -104,11 +100,9 @@ func extractStatus(filePath string) (string, error) {
 		return "", err
 	}
 
-	// Regex to find the status, e.g., "Status: Accepted"
-	re := regexp.MustCompile(`(?i)Status:\s*(\w+)`)
+	re := regexp.MustCompile(`(?i)^Status:\s*(\w+)`)
 	matches := re.FindStringSubmatch(string(content))
 	if len(matches) > 1 {
-		// Capitalize first letter using x/text/cases
 		caser := cases.Title(language.English)
 		return caser.String(matches[1]), nil
 	}
@@ -117,19 +111,32 @@ func extractStatus(filePath string) (string, error) {
 }
 
 func extractNumberFromString(s string) (int, error) {
-
-	re := regexp.MustCompile(`\d+`) // \d+ matches one or more digits
-	matches := re.FindString(s)
-
-	if matches == "" {
-		return 0, fmt.Errorf("no number found in the string")
+	matches := adrFileNamePattern.FindStringSubmatch(s)
+	if len(matches) < 2 {
+		return 0, fmt.Errorf("no ADR number found in %q", s)
 	}
 
-	// Convert the matched string to an integer
-	number, err := strconv.Atoi(matches)
+	number, err := strconv.Atoi(matches[1])
 	if err != nil {
 		return 0, err
 	}
 
 	return number, nil
+}
+
+func buildADRFileName(number int, title string) string {
+	slug := slugifyTitle(title)
+	if slug == "" {
+		slug = "untitled"
+	}
+
+	return fmt.Sprintf("%03d-%s.md", number, slug)
+}
+
+func slugifyTitle(title string) string {
+	normalized := strings.ToLower(strings.TrimSpace(title))
+	normalized = strings.Join(strings.Fields(normalized), "-")
+	normalized = invalidSlugCharsPattern.ReplaceAllString(normalized, "-")
+	normalized = repeatedHyphensPattern.ReplaceAllString(normalized, "-")
+	return strings.Trim(normalized, "-")
 }
