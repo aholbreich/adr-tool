@@ -7,6 +7,6 @@ type Globals struct {
 type CLI struct {
 	Globals
 	Init InitCmd `cmd:"" help:"Setup new ADR configuration in the current project"`
-	New  NewCmd  `cmd:"" help:"Adds new ADR"`
+	New  NewCmd  `cmd:"" help:"Creates new ADR using template"`
 	List ListCmd `cmd:"" help:"Lists all existing ADRs"`
 }
