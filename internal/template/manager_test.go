@@ -33,7 +33,7 @@ func TestSaveProcessed_Success(t *testing.T) {
 		Title:  "Example ADR",
 		Date:   "2025-02-13",
 		Number: 1,
-		Status: "PROPOSED", // Example status
+		Status: "Proposed",
 	}
 
 	// Create a temporary directory for output

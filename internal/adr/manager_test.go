@@ -1,6 +1,10 @@
 package adr
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/aholbreich/adr-tool/internal/model"
+)
 
 func TestExtractNumberFromString(t *testing.T) {
 	tests := []struct {
@@ -32,6 +36,27 @@ func TestExtractNumberFromString(t *testing.T) {
 
 			if got != tt.want {
 				t.Fatalf("got %d, want %d", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestParseADRStatus(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+		want  model.ADRStatus
+	}{
+		{name: "known status", input: "Proposed", want: model.StatusProposed},
+		{name: "another known status", input: "Accepted", want: model.StatusAccepted},
+		{name: "unknown status", input: "SomethingElse", want: model.StatusUnknown},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := parseADRStatus(tt.input)
+			if got != tt.want {
+				t.Fatalf("got %q, want %q", got, tt.want)
 			}
 		})
 	}

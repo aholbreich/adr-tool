@@ -30,7 +30,7 @@ func (r *ListCmd) Run() error {
 
 		// Format: 001-Title [Status]
 		adrTitle := strings.TrimSuffix(adr.Title, ".md")
-		formattedAdr := fmt.Sprintf("%s [%s]", adrTitle, adr.Status)
+		formattedAdr := fmt.Sprintf("%s [%s]", adrTitle, string(adr.Status))
 		fmt.Println(" -", formattedAdr)
 	}
 

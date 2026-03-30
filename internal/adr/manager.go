@@ -34,7 +34,7 @@ func (m *AdrManager) CreateNewAdr(currentConfig model.AdrConfig, adrName string)
 		Title:  adrName,
 		Date:   time.Now().Format("2006-01-02 15:04"),
 		Number: currentConfig.CurrentAdr,
-		Status: model.PROPOSED,
+		Status: model.StatusProposed,
 	}
 
 	tpl, err := template.NewTplManager().LoadTemplate()
@@ -80,7 +80,7 @@ func (m *AdrManager) GetADRList() ([]model.Adr, error) {
 		adrPath := filepath.Join(configDir, name)
 		status, err := extractStatus(adrPath)
 		if err != nil {
-			status = "Unknown"
+			status = model.StatusUnknown
 		}
 
 		adrs = append(adrs, model.Adr{
@@ -94,20 +94,32 @@ func (m *AdrManager) GetADRList() ([]model.Adr, error) {
 	return adrs, nil
 }
 
-func extractStatus(filePath string) (string, error) {
+func extractStatus(filePath string) (model.ADRStatus, error) {
 	content, err := os.ReadFile(filePath)
 	if err != nil {
-		return "", err
+		return model.StatusUnknown, err
 	}
 
 	re := regexp.MustCompile(`(?i)^Status:\s*(\w+)`)
 	matches := re.FindStringSubmatch(string(content))
 	if len(matches) > 1 {
 		caser := cases.Title(language.English)
-		return caser.String(matches[1]), nil
+		return parseADRStatus(caser.String(matches[1])), nil
 	}
 
-	return "Unknown", nil
+	return model.StatusUnknown, nil
+}
+
+func parseADRStatus(value string) model.ADRStatus {
+	switch model.ADRStatus(value) {
+	case model.StatusProposed,
+		model.StatusAccepted,
+		model.StatusDeprecated,
+		model.StatusSuperseded:
+		return model.ADRStatus(value)
+	default:
+		return model.StatusUnknown
+	}
 }
 
 func extractNumberFromString(s string) (int, error) {
