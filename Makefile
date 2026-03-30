@@ -1,26 +1,33 @@
 # Makefile
-BINARY_NAME=adr
-INSTALL_DIR=$(HOME)/bin
-VERSION=$(shell git describe --tags --abbrev=0)
-COMMIT_HASH=$(shell git rev-parse --short HEAD)
-COUNT=$(shell git rev-list $(VERSION)..HEAD --count)
+BINARY_NAME := adr
+INSTALL_DIR ?= $(HOME)/bin
+VERSION := $(shell git describe --tags --abbrev=0 2>/dev/null || echo dev)
+COMMIT_HASH := $(shell git rev-parse --short HEAD 2>/dev/null || echo unknown)
+COUNT := $(shell git rev-list $(VERSION)..HEAD --count 2>/dev/null || echo 0)
+LDFLAGS := -X main.version=$(VERSION)-$(COUNT)-$(COMMIT_HASH)
+
 # Define the target platforms
 PLATFORMS=linux/amd64 linux/arm64 darwin/amd64 darwin/arm64 windows/amd64
 
+.PHONY: build test install get-version bump amend dists clean cleancache \
+	binary_linux_amd64 binary_linux_arm64 binary_darwin_amd64 binary_darwin_arm64 \
+	binary_windows_amd64 binary_windows_arm64
+
 # Build the binary
 build:
-	go fmt
+	go fmt ./...
 	go mod tidy
-	go build -o $(BINARY_NAME) -ldflags "-X main.version=$(VERSION)-$(COUNT)-$(COMMIT_HASH)"
+	go build -o $(BINARY_NAME) -ldflags "$(LDFLAGS)"
 
 # Run tests
-test: build
+test:
 	go test -v ./...
 
 # Install the binary
-install: build test
+install: test build
 	mkdir -p $(INSTALL_DIR)
-	mv $(BINARY_NAME) $(INSTALL_DIR)/$(BINARY_NAME)
+	install -m 0755 $(BINARY_NAME) $(INSTALL_DIR)/$(BINARY_NAME)
+	@echo "Installed $(BINARY_NAME) to $(INSTALL_DIR)/$(BINARY_NAME)"
 
 
 get-version:
