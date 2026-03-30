@@ -10,7 +10,7 @@ const (
 	StatusSuperseded ADRStatus = "Superseded"
 )
 
-type Adr struct {
+type ADR struct {
 	Number int
 	Title  string
 	Date   string

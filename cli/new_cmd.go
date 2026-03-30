@@ -24,7 +24,7 @@ func (r *NewCmd) Run() error {
 	}
 
 	currentConfig.CurrentAdr++
-	if err := adr.NewAdrManager().CreateNewAdr(currentConfig, adrName); err != nil {
+	if err := adr.NewADRManager().CreateNewADR(currentConfig, adrName); err != nil {
 		return fmt.Errorf("create new ADR: %w", err)
 	}
 

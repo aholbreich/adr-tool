@@ -14,7 +14,7 @@ type ListCmd struct{}
 // Command Handler
 func (r *ListCmd) Run() error {
 
-	adrs, err := adr.NewAdrManager().GetADRList()
+	adrs, err := adr.NewADRManager().ListADRs()
 	if err != nil {
 		return fmt.Errorf("failed to list ADRs: %w", err)
 	}

@@ -20,17 +20,16 @@ var adrFileNamePattern = regexp.MustCompile(`^(\d+)-.+\.md$`)
 var invalidSlugCharsPattern = regexp.MustCompile(`[^a-z0-9-]+`)
 var repeatedHyphensPattern = regexp.MustCompile(`-+`)
 
-type AdrManager struct {
+type ADRManager struct{}
+
+// NewADRManager initializes a new ADR manager.
+func NewADRManager() *ADRManager {
+	return &ADRManager{}
 }
 
-// NewManager initializes a new ADR Manager
-func NewAdrManager() *AdrManager {
-	return &AdrManager{}
-}
-
-// Create a new ADR file with the given name
-func (m *AdrManager) CreateNewAdr(currentConfig model.AdrConfig, adrName string) error {
-	adr := model.Adr{
+// CreateNewADR creates a new ADR file with the given name.
+func (m *ADRManager) CreateNewADR(currentConfig model.AdrConfig, adrName string) error {
+	adr := model.ADR{
 		Title:  adrName,
 		Date:   time.Now().Format("2006-01-02 15:04"),
 		Number: currentConfig.CurrentAdr,
@@ -58,14 +57,15 @@ func (m *AdrManager) CreateNewAdr(currentConfig model.AdrConfig, adrName string)
 	return nil
 }
 
-func (m *AdrManager) GetADRList() ([]model.Adr, error) {
+// ListADRs returns all ADR files in reverse numeric order.
+func (m *ADRManager) ListADRs() ([]model.ADR, error) {
 	configDir := config.PathResolverInst().ConfigFolderPath()
 	entries, err := os.ReadDir(configDir)
 	if err != nil {
 		return nil, err
 	}
 
-	var adrs []model.Adr
+	var adrs []model.ADR
 	for _, e := range entries {
 		if e.IsDir() {
 			continue
@@ -83,14 +83,14 @@ func (m *AdrManager) GetADRList() ([]model.Adr, error) {
 			status = model.StatusUnknown
 		}
 
-		adrs = append(adrs, model.Adr{
+		adrs = append(adrs, model.ADR{
 			Number: num,
 			Title:  name,
 			Status: status,
 		})
 	}
 
-	SortAdrListReverse(adrs)
+	SortADRListReverse(adrs)
 	return adrs, nil
 }
 
