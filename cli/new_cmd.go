@@ -24,12 +24,12 @@ func (r *NewCmd) Run() error {
 	}
 
 	currentConfig.CurrentAdr++
-	if err := cfgManager.UpdateConfig(currentConfig); err != nil {
-		return fmt.Errorf("update ADR config: %w", err)
-	}
-
 	if err := adr.NewAdrManager().CreateNewAdr(currentConfig, adrName); err != nil {
 		return fmt.Errorf("create new ADR: %w", err)
+	}
+
+	if err := cfgManager.UpdateConfig(currentConfig); err != nil {
+		return fmt.Errorf("update ADR config: %w", err)
 	}
 
 	fmt.Printf("New ADR %03d was successfully written to: %s\n", currentConfig.CurrentAdr, currentConfig.BaseDir)
