@@ -3,9 +3,9 @@ package template
 import (
 	"embed"
 	"fmt"
-	"html/template"
 	"io/fs"
 	"os"
+	"text/template"
 )
 
 //go:embed templates/default.md
