@@ -1,106 +1,180 @@
 # ADR Tool Go
 
-Opinionated version of ADR tool written in go. 
-For general introduction into the topic, please consider to read 
+`adr` is a small command-line tool for creating and listing Architecture Decision Records (ADRs) in a project.
+
+For a general introduction to the topic, see:
 [Architecture Decision Records: A Tool for Experienced Engineers](https://alexander.holbreich.org/adr_method/)
 
+## Installation
 
-# Installation 
+### Binary download
 
-## Binary Download
+Prebuilt binaries for Linux, macOS, and Windows are available on the
+[Releases page](https://github.com/aholbreich/adr-tool/releases).
 
-Binaries are available for Linux, Mac OS, Windows. Please Check [Releases page](https://github.com/aholbreich/adr-tool/releases).
+### RPM (Fedora / Red Hat)
 
-## RPM (Fedora, RedHat)
+Add the RPM repository:
 
-First Add RPM repository
 ```bash
-# Docu: https://aholbreich.github.io/rpm-repo/#installation-fedora-centos-redhat
+# Documentation: https://aholbreich.github.io/rpm-repo/#installation-fedora-centos-redhat
 echo '[Holbreich]
 name=Holbreich Repository
 baseurl=https://aholbreich.github.io/rpm-repo/
 enabled=1
 gpgcheck=0' | sudo tee /etc/yum.repos.d/holbreich.repo
-
 ```
-install rpm with `yum` or `dnf`
+
+Install the package:
 
 ```bash
-
 sudo dnf install adr-tool
-
 ```
-Find support in [rpm-repo](https://github.com/aholbreich/rpm-repo) project home in case of any issues.
 
-## Local build
+If you run into issues with the RPM repository, see the
+[rpm-repo project](https://github.com/aholbreich/rpm-repo).
 
-The straightforward way to compile it on your own.
+### Local build
+
+Build and install the binary into `$(HOME)/bin`:
 
 ```bash
 git clone https://github.com/aholbreich/adr-tool.git
 cd adr-tool
-# compile and put to $(HOME)/bin
 make install
-
 ```
 
-# Usage
-
-## Init configuration
-
-Run
-```bash
-adr init 
-```
-before you start working.
-
-## Creating a new ADR
+If `$(HOME)/bin` is not in your `PATH`, either add it or set a custom install directory:
 
 ```bash
-adr new how to make CLI tools
-```
-this will create a new numbered ADR in folder `.adr`:
-`1-how to make CLI tools.md`.
-
-## Listing existing ADRs
-
-```bash
-adr list 
-```
-Shows you list of your ADRs with corresponding status
-
-## Help and Docu
-
-```bash
-# List all commands
-adr -h 
-
-#Example detailed help to a particular subcommand
-adr new -h 
+make install INSTALL_DIR=/usr/local/bin
 ```
 
-## Composing, Editing and Change Status of your ADR
+## Usage
 
-User your favored Editor, Open the desired ADR file under ./.adr/ folder change anything.
+### Initialize ADR configuration
 
-## TODOs
-
-* [x] Add build pipeline
-* [x] Add ADR Status Info in listing
-* [x] Multi platform binaries
-* [ ] Too long being not in final status warning
-* [ ] Add Status transition?
-* [ ] Color codes?
-* [ ] Release notes (See https://github.com/git-chglog/git-chglog)
-
-
-## For developers
+Run this once in the root of your project:
 
 ```bash
-# VBuild and try local
+adr init
+```
+
+This creates the `.adr/` directory and the `.adr/config.json` file.
+
+If no `.git` directory is found, the tool warns you and asks for confirmation before continuing.
+
+### Create a new ADR
+
+```bash
+adr new how to make cli tools
+```
+
+This creates a new numbered ADR file inside `.adr/`, for example:
+
+```text
+001-how-to-make-cli-tools.md
+```
+
+### List existing ADRs
+
+```bash
+adr list
+```
+
+Example output:
+
+```text
+Architecture Decision Records:
+ - 003-example-of-rejected [Unknown]
+ - 002-comsi-comsa [Unknown]
+ - 001-better-folder-structure [Unknown]
+```
+
+### Show help
+
+```bash
+# Show top-level help
+adr -h
+
+# Show help for a subcommand
+adr new -h
+```
+
+### Show version
+
+```bash
+adr --version
+# or
+adr -v
+```
+
+## Editing ADRs
+
+Use your preferred editor to modify ADR files in the `.adr/` directory.
+
+The default template looks like this:
+
+```md
+# <number>. <title>
+
+Status: Proposed
+Status Date: <date>
+Driver: <Your Name>
+Contributors: ...
+
+## Context
+
+## Decision
+
+### Consequences
+
+## Options considered
+
+### Option 1:
+
+### Option 2:
+
+## Advices
+```
+
+The `adr list` command reads the `Status:` line from each ADR file and shows it in the output.
+
+## Development
+
+Useful local targets:
+
+```bash
+# Format, tidy, and build the binary
 make build
 
+# Run tests
 make test
 
+# Build distribution archives
+make dists
+
+# Show computed version string
+make get-version
+
+# Remove local build artifacts
 make clean
+
+# Clean Go caches as well
+make cleancache
 ```
+
+## Project status / ideas
+
+Implemented:
+
+- build pipeline
+- ADR status in listing
+- multi-platform binaries
+
+Ideas for future improvements:
+
+- warn about ADRs staying too long in non-final status
+- status transitions
+- colorized output
+- release notes generation
