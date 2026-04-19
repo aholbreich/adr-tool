@@ -108,6 +108,18 @@ adr show how-to-make-cli-tools
 
 This prints the full ADR content to standard output.
 
+### Edit one ADR
+
+```bash
+# By number
+adr edit 1
+
+# By slug
+adr edit how-to-make-cli-tools
+```
+
+This opens the ADR in `$VISUAL`, then `$EDITOR`, then a small OS-specific fallback editor list.
+
 ### Show help
 
 ```bash

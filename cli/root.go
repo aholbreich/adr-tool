@@ -10,4 +10,5 @@ type CLI struct {
 	New  NewCmd  `cmd:"" help:"Creates new ADR using template"`
 	List ListCmd `cmd:"" help:"Lists all existing ADRs"`
 	Show ShowCmd `cmd:"" help:"Shows one ADR by number or slug"`
+	Edit EditCmd `cmd:"" help:"Opens one ADR in an editor"`
 }

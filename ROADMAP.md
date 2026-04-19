@@ -18,14 +18,14 @@ These roadmap items are already done:
 - `adr show <id>`
   Show one ADR by number, full stem, or slug.
 
+- `adr edit <id>`
+  Open one ADR in `$VISUAL`, `$EDITOR`, or a small OS-specific fallback editor list.
+
 ## Core CLI Improvements
 
 These commands would make the tool more useful during normal ADR work:
 
-- `adr edit <id>`
-  Open an ADR in `$EDITOR`.
-
-- `adr latest`
+- `adr last`
   Show the newest ADR directly.
 
 - `adr next`
