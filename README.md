@@ -140,6 +140,27 @@ adr drop-last --yes
 
 This deletes the highest-numbered ADR only when its status is not final.
 
+### Generate shell completion
+
+```bash
+adr completion <bash | zsh | fish >
+
+```
+
+Example installation:
+
+```bash
+# Bash
+install -d ~/.local/share/bash-completion/completions 
+adr completion bash > ~/.local/share/bash-completion/completions/adr
+
+# Zsh
+adr completion zsh > "${fpath[1]}/_adr"
+
+# Fish
+adr completion fish > ~/.config/fish/completions/adr.fish
+```
+
 ### Show help
 
 ```bash

@@ -27,6 +27,9 @@ These roadmap items are already done:
 - `adr drop-last`
   Delete the newest ADR only when it is still in a non-final state.
 
+- `adr completion bash|zsh|fish`
+  Generate static shell completion scripts for supported shells.
+
 ## Core CLI Improvements
 
 These commands would make the tool more useful during normal ADR work:
