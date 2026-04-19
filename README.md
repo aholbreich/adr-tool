@@ -155,8 +155,9 @@ This stages changes under `.adr/` and creates a Git commit containing only ADR c
 ### Generate shell completion
 
 ```bash
-adr completion <bash | zsh | fish >
-
+adr completion bash
+adr completion zsh
+adr completion fish
 ```
 
 Example installation:

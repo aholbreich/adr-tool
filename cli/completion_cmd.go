@@ -12,27 +12,20 @@ const completionShellWords = "bash zsh fish --help -h"
 
 // CLI Command
 type CompletionCmd struct {
-	Bash CompletionBashCmd `cmd:"" help:"Generate Bash completion script"`
-	Zsh  CompletionZshCmd  `cmd:"" help:"Generate Zsh completion script"`
-	Fish CompletionFishCmd `cmd:"" help:"Generate Fish completion script"`
+	Shell string `arg:"" required:"" enum:"bash,zsh,fish" help:"Shell to generate completion for"`
 }
 
-type CompletionBashCmd struct{}
-type CompletionZshCmd struct{}
-type CompletionFishCmd struct{}
-
-func (r *CompletionBashCmd) Run() error {
-	fmt.Print(bashCompletionScript())
-	return nil
-}
-
-func (r *CompletionZshCmd) Run() error {
-	fmt.Print(zshCompletionScript())
-	return nil
-}
-
-func (r *CompletionFishCmd) Run() error {
-	fmt.Print(fishCompletionScript())
+func (r *CompletionCmd) Run() error {
+	switch r.Shell {
+	case "bash":
+		fmt.Print(bashCompletionScript())
+	case "zsh":
+		fmt.Print(zshCompletionScript())
+	case "fish":
+		fmt.Print(fishCompletionScript())
+	default:
+		return fmt.Errorf("unsupported shell %q", r.Shell)
+	}
 	return nil
 }
 
