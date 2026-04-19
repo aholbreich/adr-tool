@@ -167,7 +167,7 @@ The default template looks like this:
 ```md
 # <number>. <title>
 
-Status: Proposed
+Status: Draft
 Status Date: <date>
 Driver: <Your Name>
 Contributors: ...

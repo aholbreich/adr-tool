@@ -4,6 +4,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/aholbreich/adr-tool/internal/model"
@@ -50,9 +51,11 @@ func TestParseADRStatus(t *testing.T) {
 		input string
 		want  model.ADRStatus
 	}{
+		{name: "draft status", input: "Draft", want: model.StatusDraft},
 		{name: "known status", input: "Proposed", want: model.StatusProposed},
 		{name: "known status lowercase", input: "proposed", want: model.StatusProposed},
 		{name: "another known status", input: "Accepted", want: model.StatusAccepted},
+		{name: "rejected status", input: "Rejected", want: model.StatusRejected},
 		{name: "unknown status", input: "SomethingElse", want: model.StatusUnknown},
 	}
 
@@ -173,6 +176,15 @@ func TestCreateNewADRCreatesMissingDirectory(t *testing.T) {
 
 	if _, statErr := os.Stat(adrPath); statErr != nil {
 		t.Fatalf("created ADR missing: %v", statErr)
+	}
+
+	content, readErr := os.ReadFile(adrPath)
+	if readErr != nil {
+		t.Fatalf("read created ADR: %v", readErr)
+	}
+
+	if !strings.Contains(string(content), "Status: Draft") {
+		t.Fatalf("expected created ADR to start with Draft status, got: %s", content)
 	}
 }
 

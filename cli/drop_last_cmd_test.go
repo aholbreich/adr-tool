@@ -43,32 +43,44 @@ func TestDropLastDeletesNonFinalADR(t *testing.T) {
 }
 
 func TestDropLastRefusesFinalADR(t *testing.T) {
-	oldListADRs := listADRs
-	oldLastADRPath := lastADRPath
-	oldRemoveADRFile := removeADRFile
-	oldConfirmDropLast := confirmDropLast
-	t.Cleanup(func() {
-		listADRs = oldListADRs
-		lastADRPath = oldLastADRPath
-		removeADRFile = oldRemoveADRFile
-		confirmDropLast = oldConfirmDropLast
-	})
-
-	listADRs = func() ([]model.ADR, error) {
-		return []model.ADR{{Number: 3, Title: "003-final.md", Status: model.StatusAccepted}}, nil
-	}
-	lastADRPath = func() (string, error) {
-		t.Fatal("lastADRPath() should not be called for final ADRs")
-		return "", nil
-	}
-	removeADRFile = func(name string) error {
-		t.Fatal("removeADRFile() should not be called for final ADRs")
-		return nil
+	tests := []struct {
+		name   string
+		status model.ADRStatus
+	}{
+		{name: "accepted", status: model.StatusAccepted},
+		{name: "rejected", status: model.StatusRejected},
 	}
 
-	err := (&DropLastCmd{}).Run()
-	if err == nil {
-		t.Fatal("expected Run() to fail")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			oldListADRs := listADRs
+			oldLastADRPath := lastADRPath
+			oldRemoveADRFile := removeADRFile
+			oldConfirmDropLast := confirmDropLast
+			t.Cleanup(func() {
+				listADRs = oldListADRs
+				lastADRPath = oldLastADRPath
+				removeADRFile = oldRemoveADRFile
+				confirmDropLast = oldConfirmDropLast
+			})
+
+			listADRs = func() ([]model.ADR, error) {
+				return []model.ADR{{Number: 3, Title: "003-final.md", Status: tt.status}}, nil
+			}
+			lastADRPath = func() (string, error) {
+				t.Fatal("lastADRPath() should not be called for final ADRs")
+				return "", nil
+			}
+			removeADRFile = func(name string) error {
+				t.Fatal("removeADRFile() should not be called for final ADRs")
+				return nil
+			}
+
+			err := (&DropLastCmd{}).Run()
+			if err == nil {
+				t.Fatal("expected Run() to fail")
+			}
+		})
 	}
 }
 

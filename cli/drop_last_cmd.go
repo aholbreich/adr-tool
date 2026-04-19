@@ -36,7 +36,7 @@ func (r *DropLastCmd) Run() error {
 	}
 
 	last := adrs[0]
-	if isFinalADRStatus(last.Status) {
+	if model.IsFinalStatus(last.Status) {
 		return fmt.Errorf("refusing to delete ADR %s because status is %s", last.Title, last.Status)
 	}
 
@@ -59,13 +59,4 @@ func (r *DropLastCmd) Run() error {
 
 	fmt.Printf("Deleted ADR %s\n", last.Title)
 	return nil
-}
-
-func isFinalADRStatus(status model.ADRStatus) bool {
-	switch status {
-	case model.StatusAccepted, model.StatusDeprecated, model.StatusSuperseded:
-		return true
-	default:
-		return false
-	}
 }

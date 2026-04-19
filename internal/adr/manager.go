@@ -32,7 +32,7 @@ func (m *ADRManager) CreateNewADR(baseDir string, number int, adrName string) (s
 		Title:  adrName,
 		Date:   time.Now().Format("2006-01-02 15:04"),
 		Number: number,
-		Status: model.StatusProposed,
+		Status: model.StatusDraft,
 	}
 
 	tpl, err := template.NewTplManager().LoadTemplate()
@@ -225,10 +225,14 @@ func extractStatus(filePath string) (model.ADRStatus, error) {
 
 func parseADRStatus(value string) model.ADRStatus {
 	switch strings.ToLower(strings.TrimSpace(value)) {
+	case strings.ToLower(string(model.StatusDraft)):
+		return model.StatusDraft
 	case strings.ToLower(string(model.StatusProposed)):
 		return model.StatusProposed
 	case strings.ToLower(string(model.StatusAccepted)):
 		return model.StatusAccepted
+	case strings.ToLower(string(model.StatusRejected)):
+		return model.StatusRejected
 	case strings.ToLower(string(model.StatusDeprecated)):
 		return model.StatusDeprecated
 	case strings.ToLower(string(model.StatusSuperseded)):
