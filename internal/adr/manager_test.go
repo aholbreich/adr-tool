@@ -3,6 +3,7 @@ package adr
 import (
 	"os"
 	"path/filepath"
+	"strconv"
 	"testing"
 
 	"github.com/aholbreich/adr-tool/internal/model"
@@ -292,5 +293,52 @@ func TestFindADRInDirAmbiguousSlug(t *testing.T) {
 	_, err := NewADRManager().findADRInDir(tempDir, "decision")
 	if err == nil {
 		t.Fatal("expected ambiguous slug error")
+	}
+}
+
+func TestFindADRInDirLastADRByComputedID(t *testing.T) {
+	tempDir := t.TempDir()
+	files := []string{
+		"001-first.md",
+		"003-third.md",
+		"002-second.md",
+	}
+
+	for _, name := range files {
+		if err := os.WriteFile(filepath.Join(tempDir, name), []byte("# test"), 0644); err != nil {
+			t.Fatalf("write %s: %v", name, err)
+		}
+	}
+
+	adrs, err := NewADRManager().listADRsInDir(tempDir)
+	if err != nil {
+		t.Fatalf("listADRsInDir() unexpected error: %v", err)
+	}
+
+	if len(adrs) == 0 {
+		t.Fatal("expected ADRs to be present")
+	}
+
+	got, err := NewADRManager().findADRInDir(tempDir, strconv.Itoa(adrs[0].Number))
+	if err != nil {
+		t.Fatalf("findADRInDir() unexpected error: %v", err)
+	}
+
+	want := filepath.Join(tempDir, "003-third.md")
+	if got != want {
+		t.Fatalf("got %q, want %q", got, want)
+	}
+}
+
+func TestFindADRInDirLastADREmpty(t *testing.T) {
+	tempDir := t.TempDir()
+
+	adrs, err := NewADRManager().listADRsInDir(tempDir)
+	if err != nil {
+		t.Fatalf("listADRsInDir() unexpected error: %v", err)
+	}
+
+	if len(adrs) != 0 {
+		t.Fatalf("got %d ADRs, want 0", len(adrs))
 	}
 }

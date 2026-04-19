@@ -120,6 +120,14 @@ adr edit how-to-make-cli-tools
 
 This opens the ADR in `$VISUAL`, then `$EDITOR`, then a small OS-specific fallback editor list.
 
+### Show the newest ADR
+
+```bash
+adr last
+```
+
+This prints the full content of the highest-numbered ADR.
+
 ### Show help
 
 ```bash

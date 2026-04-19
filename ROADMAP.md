@@ -21,12 +21,12 @@ These roadmap items are already done:
 - `adr edit <id>`
   Open one ADR in `$VISUAL`, `$EDITOR`, or a small OS-specific fallback editor list.
 
+- `adr last`
+  Show the newest ADR directly.
+
 ## Core CLI Improvements
 
 These commands would make the tool more useful during normal ADR work:
-
-- `adr last`
-  Show the newest ADR directly.
 
 - `adr next`
   Print the next available ADR number for scripting.
@@ -105,7 +105,7 @@ These features make the tool more useful in collaborative environments:
 
 If implemented incrementally, a good sequence would be:
 
-1. `edit` and `validate`
+1. `validate`
 2. `status` updates and transition rules
 3. `supersede` and relationship support
 4. `stats`, `doctor`, and generated index output

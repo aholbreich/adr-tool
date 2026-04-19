@@ -92,6 +92,22 @@ func (m *ADRManager) FindADR(id string) (string, error) {
 	return m.findADRInDir(configDir, id)
 }
 
+// LastADR returns the full path to the highest-numbered ADR.
+func (m *ADRManager) LastADR() (string, error) {
+	configDir := config.PathResolverInst().ConfigFolderPath()
+	adrs, err := m.listADRsInDir(configDir)
+	if err != nil {
+		return "", err
+	}
+
+	if len(adrs) == 0 {
+		return "", fmt.Errorf("no ADRs found")
+	}
+
+	id := strconv.Itoa(adrs[0].Number)
+	return m.findADRInDir(configDir, id)
+}
+
 func (m *ADRManager) listADRsInDir(configDir string) ([]model.ADR, error) {
 	entries, err := os.ReadDir(configDir)
 	if err != nil {

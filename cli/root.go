@@ -11,4 +11,5 @@ type CLI struct {
 	List ListCmd `cmd:"" help:"Lists all existing ADRs"`
 	Show ShowCmd `cmd:"" help:"Shows one ADR by number or slug"`
 	Edit EditCmd `cmd:"" help:"Opens one ADR in an editor"`
+	Last LastCmd `cmd:"" help:"Shows the newest ADR"`
 }
