@@ -52,8 +52,36 @@ make install INSTALL_DIR=/usr/local/bin
 
 ## Usage
 
-### Initialize ADR directory
+The adr tool usage is more or less self explainable.
 
+```bash
+
+ adr 
+Usage: adr <command> [flags]
+
+ADR tool for your project.
+
+    Project details can be found at https://github.com/aholbreich/adr-tool
+
+Flags:
+  -h, --help       Show context-sensitive help.
+  -v, --version    Print version information and quit
+
+Commands:
+  init          Setup ADR directory in the current project
+  new           Creates new ADR using template
+  list          Lists all existing ADRs
+  show          Shows one ADR by number or slug
+  edit          Opens one ADR in an editor
+  last          Shows the newest ADR
+  drop-last     Deletes the newest ADR if it is not in a final state
+  commit        Stages and commits ADR changes only
+  completion    Generate shell completion scripts
+
+Run "adr <command> --help" for more information on a command.
+```
+
+### Initialize ADR directory
 Run this once in the root of your project:
 
 ```bash
@@ -252,14 +280,5 @@ make cleancache
 See also: [ROADMAP.md](./ROADMAP.md)
 
 Implemented:
-
-- build pipeline
-- ADR status in listing
 - multi-platform binaries
 
-Ideas for future improvements:
-
-- warn about ADRs staying too long in non-final status
-- status transitions
-- colorized output
-- release notes generation

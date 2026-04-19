@@ -37,8 +37,6 @@ These roadmap items are already done:
 
 These commands would make the tool more useful during normal ADR work:
 
-- `adr next`
-  Print the next available ADR number for scripting.
 
 - `adr search <query>`
   Search ADR titles and content without requiring external tools.
@@ -110,6 +108,12 @@ These features make the tool more useful in collaborative environments:
 - Repository reporting
   Summarize ADR activity over time for maintainers.
 
+## Other Ideas
+
+- warn about ADRs staying too long in non-final status
+- status transitions
+- colorized output
+
 ## Suggested Implementation Order
 
 If implemented incrementally, a good sequence would be:
@@ -119,3 +123,5 @@ If implemented incrementally, a good sequence would be:
 3. `supersede` and relationship support
 4. `stats`, `doctor`, and generated index output
 5. CI and documentation integration
+
+
