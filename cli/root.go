@@ -13,5 +13,6 @@ type CLI struct {
 	Edit       EditCmd       `cmd:"" help:"Opens one ADR in an editor"`
 	Last       LastCmd       `cmd:"" help:"Shows the newest ADR"`
 	DropLast   DropLastCmd   `cmd:"" name:"drop-last" help:"Deletes the newest ADR if it is not in a final state"`
+	Commit     CommitCmd     `cmd:"" help:"Stages and commits ADR changes only"`
 	Completion CompletionCmd `cmd:"" help:"Generate shell completion scripts"`
 }

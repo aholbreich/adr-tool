@@ -5,8 +5,9 @@ import (
 	"strings"
 )
 
-const topLevelCompletionWords = "init new list show edit last drop-last completion --help -h --version -v"
+const topLevelCompletionWords = "init new list show edit last drop-last commit completion --help -h --version -v"
 const dropLastCompletionWords = "--yes --help -h"
+const commitCompletionWords = "--message -m --help -h"
 const completionShellWords = "bash zsh fish --help -h"
 
 // CLI Command
@@ -55,6 +56,10 @@ _adr_completion() {
       COMPREPLY=( $(compgen -W "%s" -- "${cur}") )
       return 0
       ;;
+    commit)
+      COMPREPLY=( $(compgen -W "%s" -- "${cur}") )
+      return 0
+      ;;
     completion)
       COMPREPLY=( $(compgen -W "%s" -- "${cur}") )
       return 0
@@ -63,7 +68,7 @@ _adr_completion() {
 }
 
 complete -F _adr_completion adr
-`, topLevelCompletionWords, dropLastCompletionWords, completionShellWords)
+`, topLevelCompletionWords, dropLastCompletionWords, commitCompletionWords, completionShellWords)
 }
 
 func zshCompletionScript() string {
@@ -82,6 +87,9 @@ _adr() {
     drop-last)
       _arguments '%s'
       ;;
+    commit)
+      _arguments '%s'
+      ;;
     completion)
       _arguments '%s'
       ;;
@@ -89,7 +97,7 @@ _adr() {
 }
 
 _adr "$@"
-`, zshWords(topLevelCompletionWords), zshArguments(dropLastCompletionWords), zshArguments(completionShellWords))
+`, zshWords(topLevelCompletionWords), zshArguments(dropLastCompletionWords), zshArguments(commitCompletionWords), zshArguments(completionShellWords))
 }
 
 func fishCompletionScript() string {
@@ -103,11 +111,13 @@ complete -c adr -n '__fish_use_subcommand' -a 'show' -d 'Shows one ADR by number
 complete -c adr -n '__fish_use_subcommand' -a 'edit' -d 'Opens one ADR in an editor'
 complete -c adr -n '__fish_use_subcommand' -a 'last' -d 'Shows the newest ADR'
 complete -c adr -n '__fish_use_subcommand' -a 'drop-last' -d 'Deletes the newest ADR if it is not in a final state'
+complete -c adr -n '__fish_use_subcommand' -a 'commit' -d 'Stages and commits ADR changes only'
 complete -c adr -n '__fish_use_subcommand' -a 'completion' -d 'Generate shell completion scripts'
 complete -c adr -n '__fish_use_subcommand' -s h -l help -d 'Show context-sensitive help'
 complete -c adr -n '__fish_use_subcommand' -s v -l version -d 'Print version information and quit'
 
 complete -c adr -n '__fish_seen_subcommand_from drop-last' -l yes -d 'Delete without confirmation'
+complete -c adr -n '__fish_seen_subcommand_from commit' -s m -l message -d 'Commit message to use for ADR changes'
 complete -c adr -n '__fish_seen_subcommand_from completion; and not __fish_seen_subcommand_from bash zsh fish' -a 'bash zsh fish'
 `)
 }

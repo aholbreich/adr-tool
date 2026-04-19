@@ -27,6 +27,9 @@ These roadmap items are already done:
 - `adr drop-last`
   Delete the newest ADR only when it is still in a non-final state.
 
+- `adr commit`
+  Stage and commit ADR changes only, with an optional explicit commit message.
+
 - `adr completion bash|zsh|fish`
   Generate static shell completion scripts for supported shells.
 

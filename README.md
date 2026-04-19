@@ -140,6 +140,18 @@ adr drop-last --yes
 
 This deletes the highest-numbered ADR only when its status is not final.
 
+### Commit ADR changes
+
+```bash
+# Auto-generated commit message
+adr commit
+
+# Explicit commit message
+adr commit -m "Add authentication ADR"
+```
+
+This stages changes under `.adr/` and creates a Git commit containing only ADR changes. If the current directory is not a Git repository, the command fails with a clear error.
+
 ### Generate shell completion
 
 ```bash
