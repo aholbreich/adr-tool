@@ -22,3 +22,7 @@
 
 # Go workspace file
 go.work
+
+# Agents local files
+.codex
+.claude
