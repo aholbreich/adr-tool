@@ -128,6 +128,18 @@ adr last
 
 This prints the full content of the highest-numbered ADR.
 
+### Delete the newest draft ADR
+
+```bash
+# Prompt before deleting
+adr drop-last
+
+# Delete without prompting
+adr drop-last --yes
+```
+
+This deletes the highest-numbered ADR only when its status is not final.
+
 ### Show help
 
 ```bash

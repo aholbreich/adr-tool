@@ -24,6 +24,9 @@ These roadmap items are already done:
 - `adr last`
   Show the newest ADR directly.
 
+- `adr drop-last`
+  Delete the newest ADR only when it is still in a non-final state.
+
 ## Core CLI Improvements
 
 These commands would make the tool more useful during normal ADR work:
