@@ -1,6 +1,8 @@
 package adr
 
 import (
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/aholbreich/adr-tool/internal/model"
@@ -48,6 +50,7 @@ func TestParseADRStatus(t *testing.T) {
 		want  model.ADRStatus
 	}{
 		{name: "known status", input: "Proposed", want: model.StatusProposed},
+		{name: "known status lowercase", input: "proposed", want: model.StatusProposed},
 		{name: "another known status", input: "Accepted", want: model.StatusAccepted},
 		{name: "unknown status", input: "SomethingElse", want: model.StatusUnknown},
 	}
@@ -55,6 +58,58 @@ func TestParseADRStatus(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := parseADRStatus(tt.input)
+			if got != tt.want {
+				t.Fatalf("got %q, want %q", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestExtractStatus(t *testing.T) {
+	tests := []struct {
+		name    string
+		content string
+		want    model.ADRStatus
+	}{
+		{
+			name: "plain status line below title",
+			content: `# 1. Example
+
+Status: Proposed
+`,
+			want: model.StatusProposed,
+		},
+		{
+			name: "markdown bullet status line",
+			content: `# 1. Example
+
+* Status: Accepted
+`,
+			want: model.StatusAccepted,
+		},
+		{
+			name: "missing status line",
+			content: `# 1. Example
+
+No status here.
+`,
+			want: model.StatusUnknown,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tempDir := t.TempDir()
+			filePath := filepath.Join(tempDir, "001-example.md")
+			if err := os.WriteFile(filePath, []byte(tt.content), 0644); err != nil {
+				t.Fatalf("write test ADR: %v", err)
+			}
+
+			got, err := extractStatus(filePath)
+			if err != nil {
+				t.Fatalf("extractStatus() unexpected error: %v", err)
+			}
+
 			if got != tt.want {
 				t.Fatalf("got %q, want %q", got, tt.want)
 			}

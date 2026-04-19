@@ -12,13 +12,12 @@ import (
 	"github.com/aholbreich/adr-tool/internal/config"
 	"github.com/aholbreich/adr-tool/internal/model"
 	"github.com/aholbreich/adr-tool/internal/template"
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
 )
 
 var adrFileNamePattern = regexp.MustCompile(`^(\d+)-.+\.md$`)
 var invalidSlugCharsPattern = regexp.MustCompile(`[^a-z0-9-]+`)
 var repeatedHyphensPattern = regexp.MustCompile(`-+`)
+var statusLinePattern = regexp.MustCompile(`(?im)^\s*(?:[*-]\s*)?Status:\s*([A-Za-z]+)\b`)
 
 type ADRManager struct{}
 
@@ -100,23 +99,24 @@ func extractStatus(filePath string) (model.ADRStatus, error) {
 		return model.StatusUnknown, err
 	}
 
-	re := regexp.MustCompile(`(?i)^Status:\s*(\w+)`)
-	matches := re.FindStringSubmatch(string(content))
+	matches := statusLinePattern.FindStringSubmatch(string(content))
 	if len(matches) > 1 {
-		caser := cases.Title(language.English)
-		return parseADRStatus(caser.String(matches[1])), nil
+		return parseADRStatus(matches[1]), nil
 	}
 
 	return model.StatusUnknown, nil
 }
 
 func parseADRStatus(value string) model.ADRStatus {
-	switch model.ADRStatus(value) {
-	case model.StatusProposed,
-		model.StatusAccepted,
-		model.StatusDeprecated,
-		model.StatusSuperseded:
-		return model.ADRStatus(value)
+	switch strings.ToLower(strings.TrimSpace(value)) {
+	case strings.ToLower(string(model.StatusProposed)):
+		return model.StatusProposed
+	case strings.ToLower(string(model.StatusAccepted)):
+		return model.StatusAccepted
+	case strings.ToLower(string(model.StatusDeprecated)):
+		return model.StatusDeprecated
+	case strings.ToLower(string(model.StatusSuperseded)):
+		return model.StatusSuperseded
 	default:
 		return model.StatusUnknown
 	}
