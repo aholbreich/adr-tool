@@ -33,26 +33,44 @@ func TestTemplateFilePath(t *testing.T) {
 
 // TestIsFilepathGitRepo checks .git detection
 func TestIsFilepathGitRepo(t *testing.T) {
-
-	resolver := PathResolverInst()
-
-	// Create a temporary directory to simulate a git repo
 	tempDir := t.TempDir()
 	gitDir := filepath.Join(tempDir, ".git")
-	os.Mkdir(gitDir, 0755)
+	if err := os.Mkdir(gitDir, 0755); err != nil {
+		t.Fatalf("create .git dir: %v", err)
+	}
 
-	// Change to the temporary directory
-	originalDir, _ := os.Getwd()
-	defer os.Chdir(originalDir)
-	os.Chdir(tempDir)
+	resolver := &PathResolver{BaseDir: tempDir}
 
 	if !resolver.IsFilepathGitRepo() {
 		t.Error("IsFilepathGitRepo() = false; expected true")
 	}
 
-	// Remove the .git directory and retest
-	os.RemoveAll(gitDir)
+	if err := os.RemoveAll(gitDir); err != nil {
+		t.Fatalf("remove .git dir: %v", err)
+	}
 	if resolver.IsFilepathGitRepo() {
 		t.Error("IsFilepathGitRepo() = true; expected false")
+	}
+}
+
+func TestIsFilepathGitRepoUsesBaseDirInsteadOfProcessCwd(t *testing.T) {
+	tempDir := t.TempDir()
+	if err := os.Mkdir(filepath.Join(tempDir, ".git"), 0755); err != nil {
+		t.Fatalf("create .git dir: %v", err)
+	}
+
+	otherDir := t.TempDir()
+	originalDir, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("getwd: %v", err)
+	}
+	defer os.Chdir(originalDir)
+	if err := os.Chdir(otherDir); err != nil {
+		t.Fatalf("chdir: %v", err)
+	}
+
+	resolver := &PathResolver{BaseDir: tempDir}
+	if !resolver.IsFilepathGitRepo() {
+		t.Fatal("expected IsFilepathGitRepo() to use BaseDir rather than current process directory")
 	}
 }

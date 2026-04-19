@@ -47,7 +47,7 @@ func (p *PathResolver) TemplateFilePath() string {
 }
 
 func (p *PathResolver) IsFilepathGitRepo() bool {
-	if _, err := os.Stat(filepath.Join(".", ".git")); os.IsNotExist(err) {
+	if _, err := os.Stat(filepath.Join(p.BaseDir, ".git")); os.IsNotExist(err) {
 		return false
 	}
 	return true

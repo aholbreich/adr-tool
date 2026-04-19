@@ -162,6 +162,19 @@ func TestCreateNewADRDoesNotOverwriteExistingFile(t *testing.T) {
 	}
 }
 
+func TestCreateNewADRCreatesMissingDirectory(t *testing.T) {
+	baseDir := filepath.Join(t.TempDir(), ".adr")
+
+	adrPath, err := NewADRManager().CreateNewADR(baseDir, 1, "Example")
+	if err != nil {
+		t.Fatalf("CreateNewADR() unexpected error: %v", err)
+	}
+
+	if _, statErr := os.Stat(adrPath); statErr != nil {
+		t.Fatalf("created ADR missing: %v", statErr)
+	}
+}
+
 func TestNextADRNumber(t *testing.T) {
 	tempDir := t.TempDir()
 
@@ -199,5 +212,18 @@ func TestNextADRNumberMissingDirectoryStartsAtOne(t *testing.T) {
 
 	if got != 1 {
 		t.Fatalf("got %d, want 1", got)
+	}
+}
+
+func TestListADRsMissingDirectoryIsEmpty(t *testing.T) {
+	missingDir := filepath.Join(t.TempDir(), "missing")
+
+	adrs, err := NewADRManager().listADRsInDir(missingDir)
+	if err != nil {
+		t.Fatalf("listADRsInDir() unexpected error: %v", err)
+	}
+
+	if len(adrs) != 0 {
+		t.Fatalf("got %d ADRs, want 0", len(adrs))
 	}
 }

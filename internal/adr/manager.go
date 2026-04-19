@@ -43,6 +43,10 @@ func (m *ADRManager) CreateNewADR(baseDir string, number int, adrName string) (s
 	adrFileName := buildADRFileName(adr.Number, adr.Title)
 	adrFullPath := filepath.Join(baseDir, adrFileName)
 
+	if err := os.MkdirAll(baseDir, 0755); err != nil {
+		return "", fmt.Errorf("failed to ensure ADR directory exists: %w", err)
+	}
+
 	f, err := os.OpenFile(adrFullPath, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0644)
 	if err != nil {
 		return "", fmt.Errorf("failed to create ADR file: %w", err)
@@ -85,6 +89,9 @@ func (m *ADRManager) ListADRs() ([]model.ADR, error) {
 func (m *ADRManager) listADRsInDir(configDir string) ([]model.ADR, error) {
 	entries, err := os.ReadDir(configDir)
 	if err != nil {
+		if os.IsNotExist(err) {
+			return []model.ADR{}, nil
+		}
 		return nil, err
 	}
 
