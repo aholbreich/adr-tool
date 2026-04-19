@@ -1,11 +1,8 @@
 package config
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
-
-	"github.com/aholbreich/adr-tool/internal/model"
 )
 
 type ConfigManager struct{}
@@ -14,28 +11,8 @@ func NewConfigManager() *ConfigManager {
 	return &ConfigManager{}
 }
 
-func (cm *ConfigManager) LoadConfig() (model.AdrConfig, error) {
-	var config model.AdrConfig
-	bytes, err := os.ReadFile(PathResolverInst().ConfigFilePath())
-	if err != nil {
-		return config, err
-	}
-	err = json.Unmarshal(bytes, &config)
-	return config, err
-}
-
-func (cm *ConfigManager) UpdateConfig(config model.AdrConfig) error {
-	bytes, err := json.MarshalIndent(config, "", " ")
-	if err != nil {
-		return err
-	}
-
-	return os.WriteFile(PathResolverInst().ConfigFilePath(), bytes, 0644)
-}
-
-// Init initializes the ADR configuration folder
+// InitConfig initializes the ADR directory.
 func (m *ConfigManager) InitConfig() error {
-
 	baseDir := PathResolverInst().ConfigFolderPath()
 
 	if _, err := os.Stat(baseDir); os.IsNotExist(err) {
@@ -47,17 +24,5 @@ func (m *ConfigManager) InitConfig() error {
 		return fmt.Errorf("directory %s already exists. Not overriding", baseDir)
 	}
 
-	config := model.AdrConfig{
-		BaseDir:    baseDir,
-		CurrentAdr: 0,
-	}
-	bytes, err := json.MarshalIndent(config, "", " ")
-	if err != nil {
-		return fmt.Errorf("failed to marshal configuration: %w", err)
-	}
-
-	if err := os.WriteFile(PathResolverInst().ConfigFilePath(), bytes, 0644); err != nil {
-		return fmt.Errorf("failed to write configuration: %w", err)
-	}
 	return nil
 }

@@ -11,7 +11,6 @@ import (
 
 const (
 	DefaultConfigFolderName = ".adr"
-	DefaultConfigFileName   = "config.json"
 	DefaultTemplateFileName = "default.md"
 )
 
@@ -40,11 +39,6 @@ func PathResolverInst() *PathResolver {
 
 func (p *PathResolver) ConfigFolderPath() string {
 	return filepath.Join(p.BaseDir, DefaultConfigFolderName)
-}
-
-// ConfigFilePath returns the full path to the config file
-func (p *PathResolver) ConfigFilePath() string {
-	return filepath.Join(p.ConfigFolderPath(), DefaultConfigFileName)
 }
 
 // TemplateFilePath returns the full path to the template file

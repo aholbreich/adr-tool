@@ -23,14 +23,6 @@ func TestConfigFolderPath(t *testing.T) {
 	}
 }
 
-func TestConfigFilePath(t *testing.T) {
-	resolver := PathResolverInst()
-	expected := filepath.Join(resolver.ConfigFolderPath(), DefaultConfigFileName)
-	if resolver.ConfigFilePath() != expected {
-		t.Errorf("ConfigFilePath() = %s; want %s", resolver.ConfigFilePath(), expected)
-	}
-}
-
 func TestTemplateFilePath(t *testing.T) {
 	resolver := PathResolverInst()
 	expected := filepath.Join(resolver.ConfigFolderPath(), DefaultTemplateFileName)

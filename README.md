@@ -52,7 +52,7 @@ make install INSTALL_DIR=/usr/local/bin
 
 ## Usage
 
-### Initialize ADR configuration
+### Initialize ADR directory
 
 Run this once in the root of your project:
 
@@ -60,7 +60,7 @@ Run this once in the root of your project:
 adr init
 ```
 
-This creates the `.adr/` directory and the `.adr/config.json` file.
+This creates the `.adr/` directory.
 
 If no `.git` directory is found, the tool warns you and asks for confirmation before continuing.
 
@@ -76,6 +76,8 @@ This creates a new numbered ADR file inside `.adr/`, for example:
 001-how-to-make-cli-tools.md
 ```
 
+The next ADR number is derived from the existing ADR files in `.adr/`.
+
 ### List existing ADRs
 
 ```bash
@@ -87,8 +89,8 @@ Example output:
 ```text
 Architecture Decision Records:
  - 003-example-of-rejected [Unknown]
- - 002-comsi-comsa [Unknown]
- - 001-better-folder-structure [Unknown]
+ - 002-comsi-comsa [Proposed]
+ - 001-better-folder-structure [Accepted]
 ```
 
 ### Show help

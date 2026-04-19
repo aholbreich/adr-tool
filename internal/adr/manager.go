@@ -26,39 +26,63 @@ func NewADRManager() *ADRManager {
 	return &ADRManager{}
 }
 
-// CreateNewADR creates a new ADR file with the given name.
-func (m *ADRManager) CreateNewADR(currentConfig model.AdrConfig, adrName string) error {
+// CreateNewADR creates a new ADR file with the given name and returns its full path.
+func (m *ADRManager) CreateNewADR(baseDir string, number int, adrName string) (string, error) {
 	adr := model.ADR{
 		Title:  adrName,
 		Date:   time.Now().Format("2006-01-02 15:04"),
-		Number: currentConfig.CurrentAdr,
+		Number: number,
 		Status: model.StatusProposed,
 	}
 
 	tpl, err := template.NewTplManager().LoadTemplate()
 	if err != nil {
-		return fmt.Errorf("failed to load template: %w", err)
+		return "", fmt.Errorf("failed to load template: %w", err)
 	}
 
 	adrFileName := buildADRFileName(adr.Number, adr.Title)
-	adrFullPath := filepath.Join(currentConfig.BaseDir, adrFileName)
+	adrFullPath := filepath.Join(baseDir, adrFileName)
 
-	f, err := os.Create(adrFullPath)
+	f, err := os.OpenFile(adrFullPath, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0644)
 	if err != nil {
-		return fmt.Errorf("failed to create ADR file: %w", err)
+		return "", fmt.Errorf("failed to create ADR file: %w", err)
 	}
 	defer f.Close()
 
 	if err := tpl.Execute(f, adr); err != nil {
-		return fmt.Errorf("failed to render template: %w", err)
+		return "", fmt.Errorf("failed to render template: %w", err)
 	}
 
-	return nil
+	return adrFullPath, nil
+}
+
+// NextADRNumber returns the next ADR number based on the existing files in baseDir.
+func (m *ADRManager) NextADRNumber(baseDir string) (int, error) {
+	adrs, err := m.listADRsInDir(baseDir)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return 1, nil
+		}
+		return 0, err
+	}
+
+	maxNumber := 0
+	for _, adr := range adrs {
+		if adr.Number > maxNumber {
+			maxNumber = adr.Number
+		}
+	}
+
+	return maxNumber + 1, nil
 }
 
 // ListADRs returns all ADR files in reverse numeric order.
 func (m *ADRManager) ListADRs() ([]model.ADR, error) {
 	configDir := config.PathResolverInst().ConfigFolderPath()
+	return m.listADRsInDir(configDir)
+}
+
+func (m *ADRManager) listADRsInDir(configDir string) ([]model.ADR, error) {
 	entries, err := os.ReadDir(configDir)
 	if err != nil {
 		return nil, err

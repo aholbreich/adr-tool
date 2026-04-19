@@ -16,8 +16,3 @@ type ADR struct {
 	Date   string
 	Status ADRStatus
 }
-
-type AdrConfig struct {
-	BaseDir    string `json:"base_directory"`
-	CurrentAdr int    `json:"current_id"`
-}

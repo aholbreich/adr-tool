@@ -138,3 +138,66 @@ func TestBuildADRFileName(t *testing.T) {
 		})
 	}
 }
+
+func TestCreateNewADRDoesNotOverwriteExistingFile(t *testing.T) {
+	tempDir := t.TempDir()
+	existingPath := filepath.Join(tempDir, "001-existing.md")
+	originalContent := []byte("original content")
+	if err := os.WriteFile(existingPath, originalContent, 0644); err != nil {
+		t.Fatalf("write existing ADR: %v", err)
+	}
+
+	_, err := NewADRManager().CreateNewADR(tempDir, 1, "Existing")
+	if err == nil {
+		t.Fatal("expected CreateNewADR() to fail for an existing file")
+	}
+
+	gotContent, readErr := os.ReadFile(existingPath)
+	if readErr != nil {
+		t.Fatalf("read existing ADR after failed create: %v", readErr)
+	}
+
+	if string(gotContent) != string(originalContent) {
+		t.Fatalf("existing ADR content was modified: got %q, want %q", gotContent, originalContent)
+	}
+}
+
+func TestNextADRNumber(t *testing.T) {
+	tempDir := t.TempDir()
+
+	files := map[string]string{
+		"001-first.md":    "# first",
+		"003-third.md":    "# third",
+		"not-an-adr.txt":  "ignore me",
+		"config.json":     "{}",
+		"020-invalid.txt": "ignore me too",
+	}
+
+	for name, content := range files {
+		if err := os.WriteFile(filepath.Join(tempDir, name), []byte(content), 0644); err != nil {
+			t.Fatalf("write %s: %v", name, err)
+		}
+	}
+
+	got, err := NewADRManager().NextADRNumber(tempDir)
+	if err != nil {
+		t.Fatalf("NextADRNumber() unexpected error: %v", err)
+	}
+
+	if got != 4 {
+		t.Fatalf("got %d, want 4", got)
+	}
+}
+
+func TestNextADRNumberMissingDirectoryStartsAtOne(t *testing.T) {
+	missingDir := filepath.Join(t.TempDir(), "missing")
+
+	got, err := NewADRManager().NextADRNumber(missingDir)
+	if err != nil {
+		t.Fatalf("NextADRNumber() unexpected error: %v", err)
+	}
+
+	if got != 1 {
+		t.Fatalf("got %d, want 1", got)
+	}
+}

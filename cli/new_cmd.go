@@ -16,22 +16,18 @@ type NewCmd struct {
 // Command Handler
 func (r *NewCmd) Run() error {
 	adrName := strings.Join(r.AdrName, " ")
+	baseDir := config.PathResolverInst().ConfigFolderPath()
 
-	cfgManager := config.NewConfigManager()
-	currentConfig, err := cfgManager.LoadConfig()
+	nextNumber, err := adr.NewADRManager().NextADRNumber(baseDir)
 	if err != nil {
-		return fmt.Errorf("load ADR configuration: %w; run 'adr init' first", err)
+		return fmt.Errorf("determine next ADR number: %w; run 'adr init' first", err)
 	}
 
-	currentConfig.CurrentAdr++
-	if err := adr.NewADRManager().CreateNewADR(currentConfig, adrName); err != nil {
+	_, err = adr.NewADRManager().CreateNewADR(baseDir, nextNumber, adrName)
+	if err != nil {
 		return fmt.Errorf("create new ADR: %w", err)
 	}
 
-	if err := cfgManager.UpdateConfig(currentConfig); err != nil {
-		return fmt.Errorf("update ADR config: %w", err)
-	}
-
-	fmt.Printf("New ADR %03d was successfully written to: %s\n", currentConfig.CurrentAdr, currentConfig.BaseDir)
+	fmt.Printf("New ADR %03d was successfully written to: %s\n", nextNumber, baseDir)
 	return nil
 }
