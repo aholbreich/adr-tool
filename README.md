@@ -93,6 +93,21 @@ Architecture Decision Records:
  - 001-better-folder-structure [Accepted]
 ```
 
+### Show one ADR
+
+```bash
+# By number
+adr show 1
+
+# By full stem
+adr show 001-how-to-make-cli-tools
+
+# By slug
+adr show how-to-make-cli-tools
+```
+
+This prints the full ADR content to standard output.
+
 ### Show help
 
 ```bash
@@ -167,6 +182,8 @@ make cleancache
 ```
 
 ## Project status / ideas
+
+See also: [ROADMAP.md](./ROADMAP.md)
 
 Implemented:
 

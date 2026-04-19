@@ -9,4 +9,5 @@ type CLI struct {
 	Init InitCmd `cmd:"" help:"Setup ADR directory in the current project"`
 	New  NewCmd  `cmd:"" help:"Creates new ADR using template"`
 	List ListCmd `cmd:"" help:"Lists all existing ADRs"`
+	Show ShowCmd `cmd:"" help:"Shows one ADR by number or slug"`
 }

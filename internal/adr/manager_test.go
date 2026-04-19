@@ -227,3 +227,70 @@ func TestListADRsMissingDirectoryIsEmpty(t *testing.T) {
 		t.Fatalf("got %d ADRs, want 0", len(adrs))
 	}
 }
+
+func TestFindADRInDir(t *testing.T) {
+	tempDir := t.TempDir()
+	files := map[string]string{
+		"001-first-decision.md":  "# first",
+		"002-second-decision.md": "# second",
+	}
+
+	for name, content := range files {
+		if err := os.WriteFile(filepath.Join(tempDir, name), []byte(content), 0644); err != nil {
+			t.Fatalf("write %s: %v", name, err)
+		}
+	}
+
+	tests := []struct {
+		name    string
+		id      string
+		want    string
+		wantErr bool
+	}{
+		{name: "find by plain number", id: "1", want: filepath.Join(tempDir, "001-first-decision.md")},
+		{name: "find by zero padded number", id: "002", want: filepath.Join(tempDir, "002-second-decision.md")},
+		{name: "find by full stem", id: "001-first-decision", want: filepath.Join(tempDir, "001-first-decision.md")},
+		{name: "find by slug", id: "second-decision", want: filepath.Join(tempDir, "002-second-decision.md")},
+		{name: "find by filename", id: "001-first-decision.md", want: filepath.Join(tempDir, "001-first-decision.md")},
+		{name: "missing ADR", id: "999", wantErr: true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := NewADRManager().findADRInDir(tempDir, tt.id)
+			if tt.wantErr {
+				if err == nil {
+					t.Fatalf("expected error for %q", tt.id)
+				}
+				return
+			}
+
+			if err != nil {
+				t.Fatalf("findADRInDir() unexpected error: %v", err)
+			}
+
+			if got != tt.want {
+				t.Fatalf("got %q, want %q", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestFindADRInDirAmbiguousSlug(t *testing.T) {
+	tempDir := t.TempDir()
+	files := []string{
+		"001-decision.md",
+		"002-decision.md",
+	}
+
+	for _, name := range files {
+		if err := os.WriteFile(filepath.Join(tempDir, name), []byte("# test"), 0644); err != nil {
+			t.Fatalf("write %s: %v", name, err)
+		}
+	}
+
+	_, err := NewADRManager().findADRInDir(tempDir, "decision")
+	if err == nil {
+		t.Fatal("expected ambiguous slug error")
+	}
+}

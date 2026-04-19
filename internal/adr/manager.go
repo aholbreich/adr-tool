@@ -86,6 +86,12 @@ func (m *ADRManager) ListADRs() ([]model.ADR, error) {
 	return m.listADRsInDir(configDir)
 }
 
+// FindADR resolves an ADR by number, full file stem, or slug and returns its full path.
+func (m *ADRManager) FindADR(id string) (string, error) {
+	configDir := config.PathResolverInst().ConfigFolderPath()
+	return m.findADRInDir(configDir, id)
+}
+
 func (m *ADRManager) listADRsInDir(configDir string) ([]model.ADR, error) {
 	entries, err := os.ReadDir(configDir)
 	if err != nil {
@@ -122,6 +128,69 @@ func (m *ADRManager) listADRsInDir(configDir string) ([]model.ADR, error) {
 
 	SortADRListReverse(adrs)
 	return adrs, nil
+}
+
+func (m *ADRManager) findADRInDir(configDir, id string) (string, error) {
+	id = strings.TrimSpace(id)
+	if id == "" {
+		return "", fmt.Errorf("ADR id cannot be empty")
+	}
+
+	entries, err := os.ReadDir(configDir)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return "", fmt.Errorf("ADR directory %q does not exist", configDir)
+		}
+		return "", err
+	}
+
+	if requestedNumber, err := strconv.Atoi(id); err == nil {
+		for _, e := range entries {
+			if e.IsDir() {
+				continue
+			}
+
+			number, numberErr := extractNumberFromString(e.Name())
+			if numberErr == nil && number == requestedNumber {
+				return filepath.Join(configDir, e.Name()), nil
+			}
+		}
+
+		return "", fmt.Errorf("ADR %q not found", id)
+	}
+
+	normalizedID := strings.ToLower(strings.TrimSuffix(id, ".md"))
+	var matches []string
+	for _, e := range entries {
+		if e.IsDir() {
+			continue
+		}
+
+		name := e.Name()
+		stem := strings.TrimSuffix(name, ".md")
+		if strings.EqualFold(stem, normalizedID) {
+			return filepath.Join(configDir, name), nil
+		}
+
+		number, numberErr := extractNumberFromString(name)
+		if numberErr != nil {
+			continue
+		}
+
+		slug := strings.TrimPrefix(stem, fmt.Sprintf("%03d-", number))
+		if strings.EqualFold(slug, normalizedID) {
+			matches = append(matches, filepath.Join(configDir, name))
+		}
+	}
+
+	switch len(matches) {
+	case 1:
+		return matches[0], nil
+	case 0:
+		return "", fmt.Errorf("ADR %q not found", id)
+	default:
+		return "", fmt.Errorf("ADR %q is ambiguous", id)
+	}
 }
 
 func extractStatus(filePath string) (model.ADRStatus, error) {
